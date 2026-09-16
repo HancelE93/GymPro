@@ -15,26 +15,47 @@ export default function TabNavigator() {
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
+
                 headerShown: false,
 
-                tabBarActiveTintColor: '#2196F3',
-                tabBarInactiveTintColor: '#8A8A8A',
+                /* COLORES */
+                tabBarActiveTintColor: '#D90429',
+                tabBarInactiveTintColor: '#777777',
 
+                /* BARRA INFERIOR */
                 tabBarStyle: {
-                    height: 65,
+                    height: 68,
                     paddingBottom: 8,
-                    paddingTop: 8,
+                    paddingTop: 7,
                     backgroundColor: '#FFFFFF',
-                    borderTopWidth: 0,
-                    elevation: 10,
+
+                    borderTopWidth: 1,
+                    borderTopColor: '#E5E5E5',
+
+                    elevation: 12,
+
+                    shadowColor: '#000000',
+                    shadowOffset: {
+                        width: 0,
+                        height: -2,
+                    },
+                    shadowOpacity: 0.12,
+                    shadowRadius: 5,
                 },
 
+                /* TEXTO */
                 tabBarLabelStyle: {
                     fontSize: 12,
-                    fontWeight: '600',
+                    fontWeight: '800',
+                    marginTop: 1,
                 },
 
-                tabBarIcon: ({ focused, color, size }) => {
+                /* ICONOS */
+                tabBarIcon: ({
+                    focused,
+                    color,
+                    size,
+                }) => {
 
                     let iconName: any;
 
@@ -53,11 +74,19 @@ export default function TabNavigator() {
                     return (
                         <Ionicons
                             name={iconName}
-                            size={size}
+                            size={focused ? size + 2 : size}
                             color={color}
                         />
                     );
                 },
+
+                /* EFECTO AL TOCAR */
+                tabBarItemStyle: {
+                    borderRadius: 15,
+                    marginHorizontal: 8,
+                    marginVertical: 4,
+                },
+
             })}
         >
 

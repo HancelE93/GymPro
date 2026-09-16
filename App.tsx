@@ -4,56 +4,59 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import DrawerNavigator from './src/navigators/DrawerNavigator';
-import ChestDetailScreen from './src/screens/ChestDetailScreen';
+import RoutineDetailScreen from './src/screens/RoutineDetailScreen';
+import AddRoutineScreen from './src/screens/AddRoutineScreen';
 
-export type RootStackParamList = {
-    Drawer: undefined;
+import RoutineProvider from './src/context/RoutineContext';
 
-    ChestDetail: {
-        rutina: string;
-    };
-};
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
     return (
-        <NavigationContainer>
+        <RoutineProvider>
+            <NavigationContainer>
+                <Stack.Navigator>
 
-            <Stack.Navigator>
+                    <Stack.Screen
+                        name="Drawer"
+                        component={DrawerNavigator}
+                        options={{ headerShown: false }}
+                    />
 
-                {/* DRAWER PRINCIPAL */}
-                <Stack.Screen
-                    name="Drawer"
-                    component={DrawerNavigator}
-                    options={{
-                        headerShown: false,
-                    }}
-                />
+                    <Stack.Screen
+                        name="Detail"
+                        component={RoutineDetailScreen}
+                        options={{
+                            title: 'Detalle de Rutina',
+                            headerStyle: {
+                                backgroundColor: '#D90429',
+                            },
+                            headerTintColor: '#FFFFFF',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                            headerShadowVisible: false,
+                        }}
+                    />
 
-                {/* DETALLE DE TODAS LAS RUTINAS */}
-                <Stack.Screen
-                    name="ChestDetail"
-                    component={ChestDetailScreen}
-                    options={({ route }) => ({
-                        title: route.params.rutina,
+                    <Stack.Screen
+                        name="AddRoutine"
+                        component={AddRoutineScreen}
+                        options={{
+                            title: 'Nueva Rutina',
+                            headerStyle: {
+                                backgroundColor: '#D90429',
+                            },
+                            headerTintColor: '#FFFFFF',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                            headerShadowVisible: false,
+                        }}
+                    />
 
-                        headerStyle: {
-                            backgroundColor: '#D90429',
-                        },
-
-                        headerTintColor: '#FFFFFF',
-
-                        headerTitleStyle: {
-                            fontWeight: 'bold',
-                        },
-
-                        headerShadowVisible: false,
-                    })}
-                />
-
-            </Stack.Navigator>
-
-        </NavigationContainer>
+                </Stack.Navigator>
+            </NavigationContainer>
+        </RoutineProvider>
     );
 }

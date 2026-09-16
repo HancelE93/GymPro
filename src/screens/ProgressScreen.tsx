@@ -1,117 +1,49 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
 import {
     Text,
     StyleSheet,
     View,
     ScrollView,
-    Animated,
-    Dimensions,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-
-const { width, height } = Dimensions.get('window');
 
 export default function ProgressScreen() {
-
-    // VALOR DE LA ANIMACIÓN
-    const animatedValue = useRef(
-        new Animated.Value(0)
-    ).current;
-
-    // ANIMACIÓN DEL FONDO
-    useEffect(() => {
-
-        Animated.loop(
-            Animated.sequence([
-
-                Animated.timing(animatedValue, {
-                    toValue: 1,
-                    duration: 5000,
-                    useNativeDriver: true,
-                }),
-
-                Animated.timing(animatedValue, {
-                    toValue: 0,
-                    duration: 5000,
-                    useNativeDriver: true,
-                }),
-
-            ])
-        ).start();
-
-    }, [animatedValue]);
-
-    // MOVIMIENTO DIAGONAL
-    const translateX = animatedValue.interpolate({
-        inputRange: [0, 1],
-        outputRange: [-width * 0.45, width * 0.2],
-    });
-
-    const translateY = animatedValue.interpolate({
-        inputRange: [0, 1],
-        outputRange: [height * 0.15, -height * 0.35],
-    });
 
     return (
         <SafeAreaView style={styles.container}>
 
-            {/* FONDO ANIMADO */}
-            <View style={StyleSheet.absoluteFill}>
-
-                <Animated.View
-                    style={[
-                        styles.gradientContainer,
-                        {
-                            transform: [
-                                {
-                                    translateX,
-                                },
-                                {
-                                    translateY,
-                                },
-                            ],
-                        },
-                    ]}
-                >
-
-                    <LinearGradient
-                        colors={[
-                            '#000000',
-                            '#FFFFFF',
-                            '#000000',
-                        ]}
-                        start={{
-                            x: 0,
-                            y: 1,
-                        }}
-                        end={{
-                            x: 1,
-                            y: 0,
-                        }}
-                        style={styles.gradient}
-                    />
-
-                </Animated.View>
-
-            </View>
-
-            {/* CONTENIDO */}
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.scrollContent}
             >
 
-                <Text style={styles.title}>
-                    Mi Progreso
-                </Text>
+                {/* ENCABEZADO */}
+                <View style={styles.header}>
 
-                <Text style={styles.subtitle}>
-                    Sigue avanzando hacia tus objetivos
-                </Text>
+                    <View style={styles.headerIcon}>
+                        <Ionicons
+                            name="stats-chart"
+                            size={28}
+                            color="#FFFFFF"
+                        />
+                    </View>
+
+                    <View style={styles.headerInfo}>
+
+                        <Text style={styles.title}>
+                            Mi Progreso
+                        </Text>
+
+                        <Text style={styles.subtitle}>
+                            Sigue avanzando hacia tus objetivos
+                        </Text>
+
+                    </View>
+
+                </View>
 
                 {/* PROGRESO SEMANAL */}
                 <View style={styles.progressCard}>
@@ -121,12 +53,13 @@ export default function ProgressScreen() {
                         <View style={styles.iconContainer}>
                             <Ionicons
                                 name="trophy"
-                                size={32}
-                                color="#000000"
+                                size={30}
+                                color="#D90429"
                             />
                         </View>
 
-                        <View>
+                        <View style={styles.cardHeaderInfo}>
+
                             <Text style={styles.progressTitle}>
                                 Progreso semanal
                             </Text>
@@ -134,13 +67,30 @@ export default function ProgressScreen() {
                             <Text style={styles.smallText}>
                                 Objetivo: 4 entrenamientos
                             </Text>
+
                         </View>
 
                     </View>
 
-                    <Text style={styles.percentage}>
-                        75%
-                    </Text>
+                    <View style={styles.progressNumberRow}>
+
+                        <Text style={styles.percentage}>
+                            75%
+                        </Text>
+
+                        <View style={styles.progressBadge}>
+                            <Ionicons
+                                name="trending-up"
+                                size={15}
+                                color="#D90429"
+                            />
+
+                            <Text style={styles.progressBadgeText}>
+                                En progreso
+                            </Text>
+                        </View>
+
+                    </View>
 
                     <View style={styles.progressBackground}>
                         <View style={styles.progressBar} />
@@ -153,19 +103,26 @@ export default function ProgressScreen() {
                 </View>
 
                 {/* ESTADÍSTICAS */}
-                <Text style={styles.sectionTitle}>
-                    Estadísticas
-                </Text>
+                <View style={styles.sectionHeader}>
+
+                    <View style={styles.redIndicator} />
+
+                    <Text style={styles.sectionTitle}>
+                        Estadísticas
+                    </Text>
+
+                </View>
 
                 <View style={styles.statsContainer}>
 
+                    {/* ENTRENAMIENTOS */}
                     <View style={styles.statCard}>
 
                         <View style={styles.statIcon}>
                             <Ionicons
                                 name="barbell"
                                 size={26}
-                                color="#000000"
+                                color="#D90429"
                             />
                         </View>
 
@@ -179,13 +136,14 @@ export default function ProgressScreen() {
 
                     </View>
 
+                    {/* DÍAS ACTIVOS */}
                     <View style={styles.statCard}>
 
                         <View style={styles.statIcon}>
                             <Ionicons
                                 name="flame"
                                 size={26}
-                                color="#000000"
+                                color="#D90429"
                             />
                         </View>
 
@@ -202,17 +160,23 @@ export default function ProgressScreen() {
                 </View>
 
                 {/* META */}
-                <Text style={styles.sectionTitle}>
-                    Meta semanal
-                </Text>
+                <View style={styles.sectionHeader}>
+
+                    <View style={styles.redIndicator} />
+
+                    <Text style={styles.sectionTitle}>
+                        Meta semanal
+                    </Text>
+
+                </View>
 
                 <View style={styles.goalCard}>
 
                     <View style={styles.goalIcon}>
                         <Ionicons
                             name="flag"
-                            size={28}
-                            color="#000000"
+                            size={27}
+                            color="#D90429"
                         />
                     </View>
 
@@ -228,23 +192,33 @@ export default function ProgressScreen() {
 
                     </View>
 
-                    <Text style={styles.goalNumber}>
-                        3/4
-                    </Text>
+                    <View style={styles.goalProgress}>
+
+                        <Text style={styles.goalNumber}>
+                            3/4
+                        </Text>
+
+                    </View>
 
                 </View>
 
                 {/* RACHA */}
-                <Text style={styles.sectionTitle}>
-                    Tu racha
-                </Text>
+                <View style={styles.sectionHeader}>
+
+                    <View style={styles.redIndicator} />
+
+                    <Text style={styles.sectionTitle}>
+                        Tu racha
+                    </Text>
+
+                </View>
 
                 <View style={styles.streakCard}>
 
                     <View style={styles.streakIcon}>
                         <Ionicons
                             name="flame"
-                            size={32}
+                            size={31}
                             color="#FFFFFF"
                         />
                     </View>
@@ -261,6 +235,12 @@ export default function ProgressScreen() {
 
                     </View>
 
+                    <View style={styles.streakBadge}>
+                        <Text style={styles.streakBadgeText}>
+                            🔥
+                        </Text>
+                    </View>
+
                 </View>
 
             </ScrollView>
@@ -271,61 +251,63 @@ export default function ProgressScreen() {
 
 const styles = StyleSheet.create({
 
+    /* CONTENEDOR */
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
-    },
-
-    // FONDO ANIMADO
-    gradientContainer: {
-        position: 'absolute',
-        width: width * 1.8,
-        height: height * 1.8,
-        left: -width * 0.4,
-        top: -height * 0.4,
-    },
-
-    gradient: {
-        flex: 1,
+        backgroundColor: '#050505',
     },
 
     scrollContent: {
-        padding: 20,
-        paddingBottom: 30,
+        paddingHorizontal: 18,
+        paddingTop: 12,
+        paddingBottom: 35,
     },
 
-    // TÍTULOS
+    /* ENCABEZADO */
+    header: {
+        backgroundColor: '#121212',
+        borderRadius: 20,
+        padding: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#292929',
+        marginBottom: 17,
+    },
+
+    headerIcon: {
+        width: 54,
+        height: 54,
+        borderRadius: 17,
+        backgroundColor: '#D90429',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 14,
+    },
+
+    headerInfo: {
+        flex: 1,
+    },
+
     title: {
-        fontSize: 30,
-        fontWeight: 'bold',
+        fontSize: 27,
+        fontWeight: '900',
         color: '#FFFFFF',
-        marginTop: 10,
-        textShadowColor: 'rgba(0, 0, 0, 0.5)',
-        textShadowOffset: {
-            width: 1,
-            height: 1,
-        },
-        textShadowRadius: 4,
     },
 
     subtitle: {
-        fontSize: 15,
-        color: '#FFFFFF',
-        marginTop: 5,
-        marginBottom: 25,
-        textShadowColor: 'rgba(0, 0, 0, 0.4)',
-        textShadowOffset: {
-            width: 1,
-            height: 1,
-        },
-        textShadowRadius: 3,
+        fontSize: 13,
+        color: '#A7A7A7',
+        marginTop: 4,
     },
 
-    // TARJETA DE PROGRESO
+    /* PROGRESO */
     progressCard: {
         backgroundColor: '#FFFFFF',
-        borderRadius: 22,
-        padding: 22,
+        borderRadius: 21,
+        padding: 20,
+        borderWidth: 1,
+        borderColor: '#E7E7E7',
         elevation: 6,
 
         shadowColor: '#000000',
@@ -333,7 +315,7 @@ const styles = StyleSheet.create({
             width: 0,
             height: 3,
         },
-        shadowOpacity: 0.18,
+        shadowOpacity: 0.25,
         shadowRadius: 6,
     },
 
@@ -343,19 +325,23 @@ const styles = StyleSheet.create({
     },
 
     iconContainer: {
-        width: 62,
-        height: 62,
-        borderRadius: 31,
-        backgroundColor: '#F0F0F0',
+        width: 60,
+        height: 60,
+        borderRadius: 18,
+        backgroundColor: '#FDECEF',
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 14,
+        marginRight: 13,
+    },
+
+    cardHeaderInfo: {
+        flex: 1,
     },
 
     progressTitle: {
         fontSize: 18,
-        fontWeight: 'bold',
-        color: '#111111',
+        fontWeight: '900',
+        color: '#171717',
     },
 
     smallText: {
@@ -364,50 +350,79 @@ const styles = StyleSheet.create({
         marginTop: 4,
     },
 
+    progressNumberRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginTop: 17,
+    },
+
     percentage: {
         fontSize: 44,
-        fontWeight: 'bold',
-        color: '#000000',
-        marginTop: 18,
+        fontWeight: '900',
+        color: '#D90429',
+    },
+
+    progressBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#FDECEF',
+        borderRadius: 12,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+    },
+
+    progressBadgeText: {
+        fontSize: 11,
+        fontWeight: '800',
+        color: '#D90429',
+        marginLeft: 4,
     },
 
     progressBackground: {
         height: 12,
-        backgroundColor: '#E5E5E5',
+        backgroundColor: '#E8E8E8',
         borderRadius: 10,
-        marginTop: 12,
+        marginTop: 10,
         overflow: 'hidden',
     },
 
     progressBar: {
         width: '75%',
         height: '100%',
-        backgroundColor: '#000000',
+        backgroundColor: '#D90429',
         borderRadius: 10,
     },
 
     progressText: {
-        fontSize: 14,
+        fontSize: 13,
         color: '#777777',
-        marginTop: 12,
+        marginTop: 11,
     },
 
-    // SECCIONES
+    /* SECCIONES */
+    sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 24,
+        marginBottom: 11,
+    },
+
+    redIndicator: {
+        width: 5,
+        height: 22,
+        borderRadius: 3,
+        backgroundColor: '#D90429',
+        marginRight: 9,
+    },
+
     sectionTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 19,
+        fontWeight: '900',
         color: '#FFFFFF',
-        marginTop: 25,
-        marginBottom: 12,
-        textShadowColor: 'rgba(0, 0, 0, 0.4)',
-        textShadowOffset: {
-            width: 1,
-            height: 1,
-        },
-        textShadowRadius: 3,
     },
 
-    // ESTADÍSTICAS
+    /* ESTADÍSTICAS */
     statsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -417,25 +432,36 @@ const styles = StyleSheet.create({
         width: '48%',
         backgroundColor: '#FFFFFF',
         borderRadius: 18,
-        padding: 18,
+        paddingVertical: 19,
+        paddingHorizontal: 12,
         alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#E7E7E7',
         elevation: 5,
+
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 5,
     },
 
     statIcon: {
-        width: 52,
-        height: 52,
-        borderRadius: 26,
-        backgroundColor: '#F0F0F0',
+        width: 53,
+        height: 53,
+        borderRadius: 17,
+        backgroundColor: '#FDECEF',
         justifyContent: 'center',
         alignItems: 'center',
     },
 
     statNumber: {
         fontSize: 28,
-        fontWeight: 'bold',
-        color: '#111111',
-        marginTop: 8,
+        fontWeight: '900',
+        color: '#171717',
+        marginTop: 9,
     },
 
     statLabel: {
@@ -445,83 +471,129 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 
-    // META
+    /* META */
     goalCard: {
         backgroundColor: '#FFFFFF',
         borderRadius: 18,
-        padding: 18,
+        padding: 17,
         flexDirection: 'row',
         alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#E7E7E7',
         elevation: 5,
+
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 5,
     },
 
     goalIcon: {
         width: 52,
         height: 52,
         borderRadius: 16,
-        backgroundColor: '#F0F0F0',
+        backgroundColor: '#FDECEF',
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 14,
+        marginRight: 13,
     },
 
     goalInfo: {
         flex: 1,
+        paddingRight: 8,
     },
 
     goalTitle: {
         fontSize: 16,
-        fontWeight: 'bold',
-        color: '#111111',
+        fontWeight: '900',
+        color: '#171717',
     },
 
     goalText: {
         fontSize: 12,
         color: '#777777',
         marginTop: 4,
+        lineHeight: 17,
+    },
+
+    goalProgress: {
+        minWidth: 45,
+        height: 45,
+        borderRadius: 14,
+        backgroundColor: '#FDECEF',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     goalNumber: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#000000',
+        fontSize: 16,
+        fontWeight: '900',
+        color: '#D90429',
     },
 
-    // RACHA
+    /* RACHA */
     streakCard: {
         backgroundColor: '#FFFFFF',
         borderRadius: 18,
-        padding: 18,
-        marginBottom: 30,
+        padding: 17,
+        marginBottom: 25,
         flexDirection: 'row',
         alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#E7E7E7',
         elevation: 5,
+
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 5,
     },
 
     streakIcon: {
         width: 58,
         height: 58,
-        borderRadius: 29,
-        backgroundColor: '#000000',
+        borderRadius: 18,
+        backgroundColor: '#D90429',
         justifyContent: 'center',
         alignItems: 'center',
     },
 
     streakInfo: {
-        marginLeft: 14,
+        marginLeft: 13,
         flex: 1,
+        paddingRight: 8,
     },
 
     streakNumber: {
         fontSize: 21,
-        fontWeight: 'bold',
-        color: '#111111',
+        fontWeight: '900',
+        color: '#171717',
     },
 
     streakText: {
         fontSize: 12,
         color: '#777777',
         marginTop: 4,
+        lineHeight: 17,
+    },
+
+    streakBadge: {
+        width: 40,
+        height: 40,
+        borderRadius: 13,
+        backgroundColor: '#FDECEF',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    streakBadgeText: {
+        fontSize: 20,
     },
 
 });

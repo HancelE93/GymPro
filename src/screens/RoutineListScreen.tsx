@@ -4,330 +4,296 @@ import {
     Text,
     StyleSheet,
     View,
-    ScrollView,
+    FlatList,
     Pressable,
     Image,
     Animated,
-    Dimensions,
+    Alert,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 
 import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import type { RootStackParamList } from '../../App';
+import { useRoutines } from '../context/RoutineContext';
 
-// IMÁGENES
-const pecho = require('../assets/images/pecho.jpg');
-const biceps = require('../assets/images/biceps.jpg');
-const triceps = require('../assets/images/triceps.jpg');
-const espalda = require('../assets/images/espalda.jpg');
-const piernas = require('../assets/images/piernas.jpg');
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
-const { width, height } = Dimensions.get('window');
+const imagenes = {
+    Pecho: require('../assets/images/pecho.jpg'),
+    Bíceps: require('../assets/images/biceps.jpg'),
+    Tríceps: require('../assets/images/triceps.jpg'),
+    Espalda: require('../assets/images/espalda.jpg'),
+    Piernas: require('../assets/images/piernas.jpg'),
+};
 
 export default function RoutineListScreen() {
 
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation<any>();
 
-    // VALOR DE LA ANIMACIÓN
-    const animatedValue = useRef(
-        new Animated.Value(0)
+    const {
+        routines,
+        deleteRoutine,
+    } = useRoutines();
+
+    const pulse = useRef(
+        new Animated.Value(1)
     ).current;
 
-    // ANIMACIÓN DEL FONDO
     useEffect(() => {
 
         Animated.loop(
             Animated.sequence([
 
-                Animated.timing(animatedValue, {
-                    toValue: 1,
-                    duration: 5000,
+                Animated.timing(pulse, {
+                    toValue: 1.03,
+                    duration: 1200,
                     useNativeDriver: true,
                 }),
 
-                Animated.timing(animatedValue, {
-                    toValue: 0,
-                    duration: 5000,
+                Animated.timing(pulse, {
+                    toValue: 1,
+                    duration: 1200,
                     useNativeDriver: true,
                 }),
 
             ])
         ).start();
 
-    }, [animatedValue]);
+    }, [pulse]);
 
-    // MOVIMIENTO HORIZONTAL
-    const translateX = animatedValue.interpolate({
-        inputRange: [0, 1],
-        outputRange: [-width * 0.45, width * 0.2],
-    });
+    const getImage = (muscleGroup: string) => {
 
-    // MOVIMIENTO VERTICAL
-    const translateY = animatedValue.interpolate({
-        inputRange: [0, 1],
-        outputRange: [height * 0.15, -height * 0.35],
-    });
+        return (
+            imagenes[
+                muscleGroup as keyof typeof imagenes
+            ] || imagenes.Pecho
+        );
+    };
+
+    const handleDelete = (
+        id: string,
+        name: string
+    ) => {
+
+        Alert.alert(
+            'Eliminar rutina',
+            `¿Seguro que quieres eliminar "${name}"?`,
+            [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Eliminar',
+                    style: 'destructive',
+                    onPress: () => deleteRoutine(id),
+                },
+            ]
+        );
+    };
 
     return (
         <SafeAreaView style={styles.container}>
 
-            {/* FONDO ANIMADO */}
-            <View style={StyleSheet.absoluteFill}>
+            {/* ENCABEZADO */}
+            <View style={styles.header}>
+
+                <View style={styles.headerLeft}>
+
+                    <Text style={styles.title}>
+                        Mis Rutinas
+                    </Text>
+
+                    <Text style={styles.subtitle}>
+                        {routines.length} rutinas disponibles
+                    </Text>
+
+                </View>
 
                 <Animated.View
-                    style={[
-                        styles.gradientContainer,
-                        {
-                            transform: [
-                                {
-                                    translateX,
-                                },
-                                {
-                                    translateY,
-                                },
-                            ],
-                        },
-                    ]}
+                    style={{
+                        transform: [{ scale: pulse }],
+                    }}
                 >
-
-                    <LinearGradient
-                        colors={[
-                            '#000000',
-                            '#FFFFFF',
-                            '#000000',
-                        ]}
-                        start={{
-                            x: 0,
-                            y: 1,
-                        }}
-                        end={{
-                            x: 1,
-                            y: 0,
-                        }}
-                        style={styles.gradient}
-                    />
-
+                    <Pressable
+                        style={styles.addButton}
+                        onPress={() =>
+                            navigation.navigate('AddRoutine')
+                        }
+                    >
+                        <Ionicons
+                            name="add"
+                            size={30}
+                            color="#FFFFFF"
+                        />
+                    </Pressable>
                 </Animated.View>
 
             </View>
 
-            {/* CONTENIDO */}
-            <ScrollView
+            {/* INDICADOR */}
+            <View style={styles.sectionHeader}>
+
+                <View style={styles.redIndicator} />
+
+                <Text style={styles.sectionText}>
+                    Tus entrenamientos
+                </Text>
+
+            </View>
+
+            {/* LISTA */}
+            <FlatList
+                data={routines}
+                keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.scrollContent}
-            >
+                contentContainerStyle={styles.listContent}
 
-                <Text style={styles.title}>
-                    Mis Rutinas
-                </Text>
+                ListEmptyComponent={
+                    <View style={styles.emptyContainer}>
 
-                <Text style={styles.subtitle}>
-                    Elige el entrenamiento que quieres realizar
-                </Text>
+                        <View style={styles.emptyIcon}>
+                            <Ionicons
+                                name="fitness-outline"
+                                size={52}
+                                color="#D90429"
+                            />
+                        </View>
 
-                {/* PECHO */}
-                <Pressable
-                    style={styles.routineCard}
-                    onPress={() =>
-                        navigation.navigate('ChestDetail', {
-                            rutina: 'Rutina de Pecho',
-                        })
-                    }
-                >
-
-                    <Image
-                        source={pecho}
-                        style={styles.routineImage}
-                    />
-
-                    <View style={styles.info}>
-
-                        <Text style={styles.routineTitle}>
-                            Pecho
+                        <Text style={styles.emptyTitle}>
+                            No hay rutinas
                         </Text>
 
-                        <Text style={styles.description}>
-                            Pecho, hombros y tríceps
-                        </Text>
-
-                        <Text style={styles.details}>
-                            5 ejercicios • 45 min
+                        <Text style={styles.emptyText}>
+                            Pulsa el botón + para crear tu primera rutina.
                         </Text>
 
                     </View>
+                }
 
-                    <Ionicons
-                        name="chevron-forward"
-                        size={24}
-                        color="#D90429"
-                    />
+                renderItem={({ item }) => (
 
-                </Pressable>
+                    <View style={styles.routineCard}>
 
-                {/* BÍCEPS */}
-                <Pressable
-                    style={styles.routineCard}
-                    onPress={() =>
-                        navigation.navigate('ChestDetail', {
-                            rutina: 'Rutina de Bíceps',
-                        })
-                    }
-                >
+                        {/* IMAGEN */}
+                        <Image
+                            source={getImage(item.muscleGroup)}
+                            style={styles.routineImage}
+                        />
 
-                    <Image
-                        source={biceps}
-                        style={styles.routineImage}
-                    />
+                        {/* INFORMACIÓN */}
+                        <View style={styles.info}>
 
-                    <View style={styles.info}>
+                            <Text
+                                style={styles.routineTitle}
+                                numberOfLines={2}
+                            >
+                                {item.name}
+                            </Text>
 
-                        <Text style={styles.routineTitle}>
-                            Bíceps
-                        </Text>
+                            <View style={styles.muscleContainer}>
 
-                        <Text style={styles.description}>
-                            Desarrollo y fuerza de brazos
-                        </Text>
+                                <Ionicons
+                                    name="body-outline"
+                                    size={14}
+                                    color="#D90429"
+                                />
 
-                        <Text style={styles.details}>
-                            4 ejercicios • 35 min
-                        </Text>
+                                <Text style={styles.description}>
+                                    {item.muscleGroup}
+                                </Text>
 
-                    </View>
+                            </View>
 
-                    <Ionicons
-                        name="chevron-forward"
-                        size={24}
-                        color="#D90429"
-                    />
+                            <View style={styles.durationContainer}>
 
-                </Pressable>
+                                <Ionicons
+                                    name="time-outline"
+                                    size={14}
+                                    color="#777777"
+                                />
 
-                {/* TRÍCEPS */}
-                <Pressable
-                    style={styles.routineCard}
-                    onPress={() =>
-                        navigation.navigate('ChestDetail', {
-                            rutina: 'Rutina de Tríceps',
-                        })
-                    }
-                >
+                                <Text style={styles.details}>
+                                    {item.duration} minutos
+                                </Text>
 
-                    <Image
-                        source={triceps}
-                        style={styles.routineImage}
-                    />
+                            </View>
 
-                    <View style={styles.info}>
+                        </View>
 
-                        <Text style={styles.routineTitle}>
-                            Tríceps
-                        </Text>
+                        {/* ACCIONES */}
+                        <View style={styles.actions}>
 
-                        <Text style={styles.description}>
-                            Fuerza y definición de brazos
-                        </Text>
+                            {/* VER */}
+                            <Pressable
+                                style={[
+                                    styles.actionButton,
+                                    styles.viewAction,
+                                ]}
+                                onPress={() =>
+                                    navigation.navigate(
+                                        'Detail',
+                                        {
+                                            id: item.id,
+                                        }
+                                    )
+                                }
+                            >
+                                <Ionicons
+                                    name="eye-outline"
+                                    size={20}
+                                    color="#FFFFFF"
+                                />
+                            </Pressable>
 
-                        <Text style={styles.details}>
-                            4 ejercicios • 30 min
-                        </Text>
+                            {/* EDITAR */}
+                            <Pressable
+                                style={[
+                                    styles.actionButton,
+                                    styles.editAction,
+                                ]}
+                                onPress={() =>
+                                    navigation.navigate(
+                                        'AddRoutine',
+                                        {
+                                            id: item.id,
+                                        }
+                                    )
+                                }
+                            >
+                                <Ionicons
+                                    name="pencil-outline"
+                                    size={20}
+                                    color="#FFFFFF"
+                                />
+                            </Pressable>
 
-                    </View>
+                            {/* ELIMINAR */}
+                            <Pressable
+                                style={[
+                                    styles.actionButton,
+                                    styles.deleteAction,
+                                ]}
+                                onPress={() =>
+                                    handleDelete(
+                                        item.id,
+                                        item.name
+                                    )
+                                }
+                            >
+                                <Ionicons
+                                    name="trash-outline"
+                                    size={20}
+                                    color="#FFFFFF"
+                                />
+                            </Pressable>
 
-                    <Ionicons
-                        name="chevron-forward"
-                        size={24}
-                        color="#D90429"
-                    />
-
-                </Pressable>
-
-                {/* ESPALDA */}
-                <Pressable
-                    style={styles.routineCard}
-                    onPress={() =>
-                        navigation.navigate('ChestDetail', {
-                            rutina: 'Rutina de Espalda',
-                        })
-                    }
-                >
-
-                    <Image
-                        source={espalda}
-                        style={styles.routineImage}
-                    />
-
-                    <View style={styles.info}>
-
-                        <Text style={styles.routineTitle}>
-                            Espalda
-                        </Text>
-
-                        <Text style={styles.description}>
-                            Espalda y fortalecimiento dorsal
-                        </Text>
-
-                        <Text style={styles.details}>
-                            5 ejercicios • 50 min
-                        </Text>
-
-                    </View>
-
-                    <Ionicons
-                        name="chevron-forward"
-                        size={24}
-                        color="#D90429"
-                    />
-
-                </Pressable>
-
-                {/* PIERNAS */}
-                <Pressable
-                    style={styles.routineCard}
-                    onPress={() =>
-                        navigation.navigate('ChestDetail', {
-                            rutina: 'Rutina de Piernas',
-                        })
-                    }
-                >
-
-                    <Image
-                        source={piernas}
-                        style={styles.routineImage}
-                    />
-
-                    <View style={styles.info}>
-
-                        <Text style={styles.routineTitle}>
-                            Piernas
-                        </Text>
-
-                        <Text style={styles.description}>
-                            Fuerza y resistencia de piernas
-                        </Text>
-
-                        <Text style={styles.details}>
-                            6 ejercicios • 55 min
-                        </Text>
+                        </View>
 
                     </View>
 
-                    <Ionicons
-                        name="chevron-forward"
-                        size={24}
-                        color="#D90429"
-                    />
-
-                </Pressable>
-
-            </ScrollView>
+                )}
+            />
 
         </SafeAreaView>
     );
@@ -335,64 +301,100 @@ export default function RoutineListScreen() {
 
 const styles = StyleSheet.create({
 
+    /* CONTENEDOR GENERAL */
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#050505',
     },
 
-    // FONDO ANIMADO
-    gradientContainer: {
-        position: 'absolute',
-        width: width * 1.8,
-        height: height * 1.8,
-        left: -width * 0.4,
-        top: -height * 0.4,
+    /* ENCABEZADO */
+    header: {
+        paddingHorizontal: 20,
+        paddingTop: 15,
+        paddingBottom: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
 
-    gradient: {
+    headerLeft: {
         flex: 1,
+        paddingRight: 15,
     },
 
-    scrollContent: {
-        padding: 20,
-        paddingBottom: 30,
-    },
-
-    // TÍTULOS
     title: {
         fontSize: 30,
-        fontWeight: 'bold',
+        fontWeight: '900',
         color: '#FFFFFF',
-        marginTop: 10,
-        textShadowColor: 'rgba(0, 0, 0, 0.30)',
-        textShadowOffset: {
-            width: 1,
-            height: 1,
-        },
-        textShadowRadius: 4,
+        letterSpacing: 0.3,
     },
 
     subtitle: {
-        fontSize: 15,
-        color: '#FFFFFF',
+        fontSize: 14,
+        color: '#AAAAAA',
         marginTop: 5,
-        marginBottom: 20,
-        textShadowColor: 'rgba(0, 0, 0, 0.25)',
-        textShadowOffset: {
-            width: 1,
-            height: 1,
-        },
-        textShadowRadius: 3,
     },
 
-    // TARJETAS
-    routineCard: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 18,
-        padding: 12,
-        marginBottom: 14,
+    /* BOTÓN AGREGAR */
+    addButton: {
+        width: 54,
+        height: 54,
+        borderRadius: 27,
+        backgroundColor: '#D90429',
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        elevation: 7,
+
+        shadowColor: '#D90429',
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.35,
+        shadowRadius: 6,
+    },
+
+    /* ENCABEZADO DE SECCIÓN */
+    sectionHeader: {
         flexDirection: 'row',
         alignItems: 'center',
+        paddingHorizontal: 20,
+        marginBottom: 12,
+    },
+
+    redIndicator: {
+        width: 5,
+        height: 22,
+        borderRadius: 3,
+        backgroundColor: '#D90429',
+        marginRight: 9,
+    },
+
+    sectionText: {
+        fontSize: 16,
+        fontWeight: '800',
+        color: '#FFFFFF',
+    },
+
+    /* LISTA */
+    listContent: {
+        paddingHorizontal: 18,
+        paddingBottom: 30,
+    },
+
+    /* CARD BLANCA */
+    routineCard: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 19,
+        padding: 12,
+        marginBottom: 13,
+        flexDirection: 'row',
+        alignItems: 'center',
+
+        borderWidth: 1,
+        borderColor: '#E7E7E7',
+
         elevation: 6,
 
         shadowColor: '#000000',
@@ -400,40 +402,116 @@ const styles = StyleSheet.create({
             width: 0,
             height: 3,
         },
-        shadowOpacity: 0.15,
-        shadowRadius: 5,
+        shadowOpacity: 0.35,
+        shadowRadius: 6,
     },
 
-    // IMAGEN
+    /* IMAGEN */
     routineImage: {
-        width: 80,
-        height: 80,
+        width: 82,
+        height: 82,
         borderRadius: 15,
-        marginRight: 14,
+        marginRight: 13,
         resizeMode: 'cover',
     },
 
-    // INFORMACIÓN
+    /* INFORMACIÓN */
     info: {
         flex: 1,
+        paddingRight: 7,
     },
 
     routineTitle: {
-        fontSize: 19,
-        fontWeight: 'bold',
-        color: '#222222',
+        fontSize: 17,
+        fontWeight: '800',
+        color: '#171717',
+        lineHeight: 22,
+    },
+
+    muscleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 7,
     },
 
     description: {
         fontSize: 13,
-        color: '#666666',
-        marginTop: 4,
+        fontWeight: '700',
+        color: '#D90429',
+        marginLeft: 5,
+    },
+
+    durationContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 6,
     },
 
     details: {
         fontSize: 12,
+        color: '#666666',
+        marginLeft: 5,
+    },
+
+    /* BOTONES DE ACCIÓN */
+    actions: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 7,
+    },
+
+    actionButton: {
+        width: 38,
+        height: 38,
+        borderRadius: 11,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    viewAction: {
+        backgroundColor: '#1B4F72',
+    },
+
+    editAction: {
+        backgroundColor: '#8A4B08',
+    },
+
+    deleteAction: {
+        backgroundColor: '#D90429',
+    },
+
+    /* ESTADO VACÍO */
+    emptyContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 100,
+        paddingHorizontal: 30,
+    },
+
+    emptyIcon: {
+        width: 85,
+        height: 85,
+        borderRadius: 25,
+        backgroundColor: '#26070D',
+        borderWidth: 1,
+        borderColor: '#450B16',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    emptyTitle: {
+        fontSize: 22,
+        fontWeight: '800',
+        color: '#FFFFFF',
+        marginTop: 18,
+    },
+
+    emptyText: {
+        fontSize: 14,
         color: '#999999',
-        marginTop: 6,
+        marginTop: 7,
+        textAlign: 'center',
+        lineHeight: 21,
     },
 
 });

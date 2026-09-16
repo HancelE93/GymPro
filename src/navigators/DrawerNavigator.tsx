@@ -1,5 +1,6 @@
 import { createDrawerNavigator, DrawerItem } from '@react-navigation/drawer';
 import { Ionicons } from '@expo/vector-icons';
+
 import {
     View,
     Text,
@@ -7,6 +8,7 @@ import {
     StyleSheet,
     Animated,
 } from 'react-native';
+
 import { useEffect, useRef } from 'react';
 
 import SettingsScreen from '../screens/SettingsScreen';
@@ -18,23 +20,30 @@ const imagen = require('../assets/images/vv.jpg');
 
 export default function DrawerNavigator() {
 
-    const pulse = useRef(new Animated.Value(1)).current;
+    const pulse = useRef(
+        new Animated.Value(1)
+    ).current;
 
     useEffect(() => {
+
         Animated.loop(
             Animated.sequence([
+
                 Animated.timing(pulse, {
                     toValue: 1.06,
                     duration: 900,
                     useNativeDriver: true,
                 }),
+
                 Animated.timing(pulse, {
                     toValue: 1,
                     duration: 900,
                     useNativeDriver: true,
                 }),
+
             ])
         ).start();
+
     }, [pulse]);
 
     return (
@@ -53,118 +62,192 @@ export default function DrawerNavigator() {
                     fontWeight: 'bold',
                 },
 
-                drawerActiveTintColor: '#D90429',
-                drawerInactiveTintColor: '#666',
+                drawerActiveTintColor: '#FFFFFF',
+                drawerInactiveTintColor: '#A7A7A7',
 
                 drawerLabelStyle: {
                     fontSize: 15,
-                    fontWeight: '600',
+                    fontWeight: '700',
                 },
 
                 drawerStyle: {
                     width: 290,
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: '#050505',
                 },
             }}
 
-            drawerContent={(props) => (
-                <View style={styles.drawerContainer}>
+            drawerContent={(props) => {
 
-                    {/* ENCABEZADO */}
-                    <View style={styles.profileHeader}>
+                const currentRoute =
+                    props.state.routes[props.state.index].name;
 
-                        <Animated.View
-                            style={[
-                                styles.imageContainer,
-                                {
-                                    transform: [
-                                        {
-                                            scale: pulse,
-                                        },
-                                    ],
-                                },
-                            ]}
-                        >
-                            <Image
-                                source={imagen}
-                                style={styles.profileImage}
-                            />
-                        </Animated.View>
+                return (
+                    <View style={styles.drawerContainer}>
 
-                        <Text style={styles.appName}>
-                            GymPro
-                        </Text>
+                        {/* ENCABEZADO */}
+                        <View style={styles.profileHeader}>
 
-                        <Text style={styles.appSubtitle}>
-                            Entrena • Progresa • Supera
-                        </Text>
+                            <Animated.View
+                                style={[
+                                    styles.imageContainer,
+                                    {
+                                        transform: [
+                                            {
+                                                scale: pulse,
+                                            },
+                                        ],
+                                    },
+                                ]}
+                            >
 
-                    </View>
-
-                    {/* MENÚ */}
-                    <View style={styles.menuContainer}>
-
-                        <DrawerItem
-                            label="Configuración"
-                            icon={({ color, size }) => (
-                                <Ionicons
-                                    name="settings-outline"
-                                    size={size}
-                                    color={color}
+                                <Image
+                                    source={imagen}
+                                    style={styles.profileImage}
                                 />
-                            )}
-                            focused={
-                                props.state.routes[props.state.index].name ===
-                                'Configuración'
-                            }
-                            activeTintColor="#D90429"
-                            inactiveTintColor="#777"
-                            onPress={() =>
-                                props.navigation.navigate('Configuración')
-                            }
-                            style={styles.drawerItem}
-                            labelStyle={styles.drawerLabel}
-                        />
 
-                        <DrawerItem
-                            label="Mi Entrenamiento"
-                            icon={({ color, size }) => (
-                                <Ionicons
-                                    name="fitness-outline"
-                                    size={size}
-                                    color={color}
+                            </Animated.View>
+
+                            <Text style={styles.appName}>
+                                GymPro
+                            </Text>
+
+                            <Text style={styles.appSubtitle}>
+                                Entrena • Progresa • Supera
+                            </Text>
+
+                        </View>
+
+                        {/* MENÚ */}
+                        <View style={styles.menuContainer}>
+
+                            <Text style={styles.menuTitle}>
+                                MENÚ PRINCIPAL
+                            </Text>
+
+                            {/* CONFIGURACIÓN */}
+                            <View
+                                style={[
+                                    styles.menuItemContainer,
+                                    currentRoute === 'Configuración' &&
+                                    styles.menuItemActive,
+                                ]}
+                            >
+
+                                <DrawerItem
+                                    label="Configuración"
+                                    icon={({ color, size }) => (
+                                        <Ionicons
+                                            name={
+                                                currentRoute === 'Configuración'
+                                                    ? 'settings'
+                                                    : 'settings-outline'
+                                            }
+                                            size={size}
+                                            color={color}
+                                        />
+                                    )}
+                                    focused={
+                                        currentRoute === 'Configuración'
+                                    }
+                                    activeTintColor="#FFFFFF"
+                                    inactiveTintColor="#A7A7A7"
+                                    onPress={() =>
+                                        props.navigation.navigate(
+                                            'Configuración'
+                                        )
+                                    }
+                                    style={styles.drawerItem}
+                                    labelStyle={styles.drawerLabel}
                                 />
-                            )}
-                            focused={
-                                props.state.routes[props.state.index].name ===
-                                'Mi Entrenamiento'
-                            }
-                            activeTintColor="#D90429"
-                            inactiveTintColor="#777"
-                            onPress={() =>
-                                props.navigation.navigate('Mi Entrenamiento')
-                            }
-                            style={styles.drawerItem}
-                            labelStyle={styles.drawerLabel}
-                        />
+
+                            </View>
+
+                            {/* MI ENTRENAMIENTO */}
+                            <View
+                                style={[
+                                    styles.menuItemContainer,
+                                    currentRoute === 'Mi Entrenamiento' &&
+                                    styles.menuItemActive,
+                                ]}
+                            >
+
+                                <DrawerItem
+                                    label="Mi Entrenamiento"
+                                    icon={({ color, size }) => (
+                                        <Ionicons
+                                            name={
+                                                currentRoute === 'Mi Entrenamiento'
+                                                    ? 'fitness'
+                                                    : 'fitness-outline'
+                                            }
+                                            size={size}
+                                            color={color}
+                                        />
+                                    )}
+                                    focused={
+                                        currentRoute === 'Mi Entrenamiento'
+                                    }
+                                    activeTintColor="#FFFFFF"
+                                    inactiveTintColor="#A7A7A7"
+                                    onPress={() =>
+                                        props.navigation.navigate(
+                                            'Mi Entrenamiento'
+                                        )
+                                    }
+                                    style={styles.drawerItem}
+                                    labelStyle={styles.drawerLabel}
+                                />
+
+                            </View>
+
+                        </View>
+
+                        {/* SEPARADOR */}
+                        <View style={styles.separator} />
+
+                        {/* CONSEJO */}
+                        <View style={styles.tipCard}>
+
+                            <View style={styles.tipIcon}>
+
+                                <Ionicons
+                                    name="flash"
+                                    size={21}
+                                    color="#D90429"
+                                />
+
+                            </View>
+
+                            <View style={styles.tipContent}>
+
+                                <Text style={styles.tipTitle}>
+                                    MANTENTE CONSTANTE
+                                </Text>
+
+                                <Text style={styles.tipText}>
+                                    Cada entrenamiento cuenta.
+                                </Text>
+
+                            </View>
+
+                        </View>
+
+                        {/* PIE */}
+                        <View style={styles.footer}>
+
+                            <Text style={styles.footerTitle}>
+                                GYMPRO
+                            </Text>
+
+                            <Text style={styles.footerText}>
+                                Versión 1.0.0
+                            </Text>
+
+                        </View>
 
                     </View>
-
-                    {/* PIE */}
-                    <View style={styles.footer}>
-
-                        <Text style={styles.footerTitle}>
-                            GYMPRO
-                        </Text>
-
-                        <Text style={styles.footerText}>
-                            Versión 1.0.0
-                        </Text>
-
-                    </View>
-
-                </View>
-            )}
+                );
+            }}
 
         >
 
@@ -184,11 +267,13 @@ export default function DrawerNavigator() {
 
 const styles = StyleSheet.create({
 
+    /* CONTENEDOR */
     drawerContainer: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#050505',
     },
 
+    /* CABECERA */
     profileHeader: {
         backgroundColor: '#D90429',
         paddingTop: 55,
@@ -204,7 +289,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 5,
         marginBottom: 14,
-        elevation: 6,
+        elevation: 7,
+
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
     },
 
     profileImage: {
@@ -215,7 +308,7 @@ const styles = StyleSheet.create({
     },
 
     appName: {
-        fontSize: 28,
+        fontSize: 29,
         fontWeight: '900',
         color: '#FFFFFF',
         letterSpacing: 1,
@@ -229,40 +322,110 @@ const styles = StyleSheet.create({
         opacity: 0.9,
     },
 
+    /* MENÚ */
     menuContainer: {
-        paddingTop: 20,
-        paddingHorizontal: 10,
+        paddingTop: 22,
+        paddingHorizontal: 12,
+    },
+
+    menuTitle: {
+        fontSize: 11,
+        fontWeight: '800',
+        color: '#777777',
+        letterSpacing: 1.2,
+        marginLeft: 12,
+        marginBottom: 10,
+    },
+
+    menuItemContainer: {
+        borderRadius: 15,
+        marginBottom: 7,
+        overflow: 'hidden',
+    },
+
+    menuItemActive: {
+        backgroundColor: '#D90429',
     },
 
     drawerItem: {
-        borderRadius: 14,
-        marginVertical: 5,
+        marginVertical: 0,
+        borderRadius: 15,
     },
 
     drawerLabel: {
         fontSize: 15,
-        fontWeight: '600',
+        fontWeight: '700',
         marginLeft: -5,
     },
 
+    /* SEPARADOR */
+    separator: {
+        height: 1,
+        backgroundColor: '#252525',
+        marginHorizontal: 18,
+        marginTop: 18,
+    },
+
+    /* CONSEJO */
+    tipCard: {
+        marginHorizontal: 18,
+        marginTop: 18,
+        padding: 13,
+        backgroundColor: '#121212',
+        borderRadius: 16,
+        borderWidth: 1,
+        borderColor: '#292929',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    tipIcon: {
+        width: 42,
+        height: 42,
+        borderRadius: 13,
+        backgroundColor: '#26070D',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 11,
+    },
+
+    tipContent: {
+        flex: 1,
+    },
+
+    tipTitle: {
+        fontSize: 10,
+        fontWeight: '900',
+        color: '#D90429',
+        letterSpacing: 0.5,
+    },
+
+    tipText: {
+        fontSize: 11,
+        color: '#999999',
+        marginTop: 4,
+    },
+
+    /* PIE */
     footer: {
         marginTop: 'auto',
-        padding: 20,
+        paddingVertical: 20,
         alignItems: 'center',
         borderTopWidth: 1,
-        borderTopColor: '#EEEEEE',
+        borderTopColor: '#252525',
     },
 
     footerTitle: {
         fontSize: 14,
         fontWeight: '900',
         color: '#D90429',
+        letterSpacing: 2,
     },
 
     footerText: {
         fontSize: 11,
-        color: '#999',
-        marginTop: 3,
+        color: '#777777',
+        marginTop: 4,
     },
 
 });
