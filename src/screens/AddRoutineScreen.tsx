@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import {
     Alert,
@@ -62,10 +63,10 @@ export default function AddRoutineScreen({ navigation, route }: any) {
             return;
         }
 
-        if (durationNumber <= 0) {
+        if (durationNumber < 10 || durationNumber > 180) {
             Alert.alert(
                 'Duración inválida',
-                'La duración debe ser mayor a 0 minutos.'
+                'La duración debe estar entre 10 y 180 minutos.'
             );
             return;
         }
@@ -200,7 +201,11 @@ export default function AddRoutineScreen({ navigation, route }: any) {
                             activeOpacity={0.8}
                         >
                             <Ionicons
-                                name={idToEdit ? 'checkmark-circle-outline' : 'add-circle-outline'}
+                                name={
+                                    idToEdit
+                                        ? 'checkmark-circle-outline'
+                                        : 'add-circle-outline'
+                                }
                                 size={22}
                                 color="#FFFFFF"
                             />
