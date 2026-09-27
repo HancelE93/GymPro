@@ -9,15 +9,12 @@ import {
     Pressable,
     Image,
     Animated,
-    Dimensions,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 const imagen = require('../assets/images/vv.jpg');
-
-const { width } = Dimensions.get('window');
 
 export default function SettingsScreen() {
 
@@ -59,43 +56,68 @@ export default function SettingsScreen() {
                 contentContainerStyle={styles.scrollContent}
             >
 
-                {/* IMAGEN */}
+                {/* IMAGEN PRINCIPAL */}
+
                 <Animated.View
-                    style={{
-                        transform: [{ scale: pulse }],
-                    }}
+                    style={[
+                        styles.imageContainer,
+                        {
+                            transform: [{ scale: pulse }],
+                        },
+                    ]}
                 >
+
                     <Image
                         source={imagen}
                         style={styles.headerImage}
                     />
+
                 </Animated.View>
 
-                {/* ENCABEZADO */}
-                <View style={styles.headerInfo}>
+                {/* MARCA */}
 
-                    <Text style={styles.appName}>
-                        GymPro Hancel Espin
-                    </Text>
+                <View style={styles.brandSection}>
 
-                    <Text style={styles.appSubtitle}>
-                        Tu mejor versión comienza hoy
-                    </Text>
+                    <View style={styles.brandIcon}>
+
+                        <Ionicons
+                            name="barbell"
+                            size={20}
+                            color="#FFFFFF"
+                        />
+
+                    </View>
+
+                    <View>
+
+                        <Text style={styles.brandText}>
+                            GYMPRO
+                        </Text>
+
+                        <Text style={styles.brandSubtitle}>
+                            Hancel Espin
+                        </Text>
+
+                    </View>
 
                 </View>
 
-                {/* TÍTULO */}
-                <View style={styles.titleContainer}>
+                {/* ENCABEZADO */}
 
-                    <View style={styles.titleIcon}>
+                <View style={styles.headerCard}>
+
+                    <View style={styles.headerIcon}>
+
                         <Ionicons
                             name="settings-outline"
                             size={28}
                             color="#FFFFFF"
                         />
+
                     </View>
 
-                    <View>
+                    <View style={styles.headerInfo}>
+
                         <Text style={styles.title}>
                             Configuración
                         </Text>
@@ -103,23 +125,33 @@ export default function SettingsScreen() {
                         <Text style={styles.subtitle}>
                             Personaliza tu experiencia en GymPro
                         </Text>
+
                     </View>
 
                 </View>
 
                 {/* PERFIL */}
-                <Text style={styles.sectionTitle}>
-                    Perfil
-                </Text>
+
+                <View style={styles.sectionHeader}>
+
+                    <View style={styles.redIndicator} />
+
+                    <Text style={styles.sectionTitle}>
+                        Perfil
+                    </Text>
+
+                </View>
 
                 <Pressable style={styles.optionCard}>
 
                     <View style={styles.iconBox}>
+
                         <Ionicons
                             name="person-outline"
-                            size={24}
+                            size={23}
                             color="#D90429"
                         />
+
                     </View>
 
                     <View style={styles.info}>
@@ -134,28 +166,50 @@ export default function SettingsScreen() {
 
                     </View>
 
-                    <Ionicons
-                        name="chevron-forward"
-                        size={22}
-                        color="#AAAAAA"
-                    />
+                    <View style={styles.arrowBox}>
+
+                        <Ionicons
+                            name="chevron-forward"
+                            size={18}
+                            color="#888888"
+                        />
+
+                    </View>
 
                 </Pressable>
 
                 {/* PREFERENCIAS */}
-                <Text style={styles.sectionTitle}>
-                    Preferencias
-                </Text>
+
+                <View style={styles.sectionHeader}>
+
+                    <View style={styles.redIndicator} />
+
+                    <View>
+
+                        <Text style={styles.sectionTitle}>
+                            Preferencias
+                        </Text>
+
+                        <Text style={styles.sectionSubtitle}>
+                            Personaliza cómo funciona la aplicación
+                        </Text>
+
+                    </View>
+
+                </View>
 
                 {/* NOTIFICACIONES */}
+
                 <View style={styles.optionCard}>
 
                     <View style={styles.iconBox}>
+
                         <Ionicons
                             name="notifications-outline"
-                            size={24}
+                            size={23}
                             color="#D90429"
                         />
+
                     </View>
 
                     <View style={styles.info}>
@@ -187,14 +241,17 @@ export default function SettingsScreen() {
                 </View>
 
                 {/* MODO OSCURO */}
+
                 <View style={styles.optionCard}>
 
                     <View style={styles.iconBox}>
+
                         <Ionicons
                             name="moon-outline"
-                            size={24}
+                            size={23}
                             color="#D90429"
                         />
+
                     </View>
 
                     <View style={styles.info}>
@@ -226,14 +283,17 @@ export default function SettingsScreen() {
                 </View>
 
                 {/* SONIDOS */}
+
                 <View style={styles.optionCard}>
 
                     <View style={styles.iconBox}>
+
                         <Ionicons
                             name="volume-high-outline"
-                            size={24}
+                            size={23}
                             color="#D90429"
                         />
+
                     </View>
 
                     <View style={styles.info}>
@@ -265,18 +325,35 @@ export default function SettingsScreen() {
                 </View>
 
                 {/* ENTRENAMIENTO */}
-                <Text style={styles.sectionTitle}>
-                    Entrenamiento
-                </Text>
+
+                <View style={styles.sectionHeader}>
+
+                    <View style={styles.redIndicator} />
+
+                    <View>
+
+                        <Text style={styles.sectionTitle}>
+                            Entrenamiento
+                        </Text>
+
+                        <Text style={styles.sectionSubtitle}>
+                            Configura tus objetivos
+                        </Text>
+
+                    </View>
+
+                </View>
 
                 <Pressable style={styles.optionCard}>
 
                     <View style={styles.iconBox}>
+
                         <Ionicons
                             name="time-outline"
-                            size={24}
+                            size={23}
                             color="#D90429"
                         />
+
                     </View>
 
                     <View style={styles.info}>
@@ -291,22 +368,28 @@ export default function SettingsScreen() {
 
                     </View>
 
-                    <Ionicons
-                        name="chevron-forward"
-                        size={22}
-                        color="#AAAAAA"
-                    />
+                    <View style={styles.arrowBox}>
+
+                        <Ionicons
+                            name="chevron-forward"
+                            size={18}
+                            color="#888888"
+                        />
+
+                    </View>
 
                 </Pressable>
 
                 <Pressable style={styles.optionCard}>
 
                     <View style={styles.iconBox}>
+
                         <Ionicons
                             name="trophy-outline"
-                            size={24}
+                            size={23}
                             color="#D90429"
                         />
+
                     </View>
 
                     <View style={styles.info}>
@@ -321,27 +404,48 @@ export default function SettingsScreen() {
 
                     </View>
 
-                    <Ionicons
-                        name="chevron-forward"
-                        size={22}
-                        color="#AAAAAA"
-                    />
+                    <View style={styles.arrowBox}>
+
+                        <Ionicons
+                            name="chevron-forward"
+                            size={18}
+                            color="#888888"
+                        />
+
+                    </View>
 
                 </Pressable>
 
                 {/* APLICACIÓN */}
-                <Text style={styles.sectionTitle}>
-                    Aplicación
-                </Text>
+
+                <View style={styles.sectionHeader}>
+
+                    <View style={styles.redIndicator} />
+
+                    <View>
+
+                        <Text style={styles.sectionTitle}>
+                            Aplicación
+                        </Text>
+
+                        <Text style={styles.sectionSubtitle}>
+                            Información de GymPro
+                        </Text>
+
+                    </View>
+
+                </View>
 
                 <Pressable style={styles.optionCard}>
 
                     <View style={styles.iconBox}>
+
                         <Ionicons
                             name="information-circle-outline"
-                            size={24}
+                            size={23}
                             color="#D90429"
                         />
+
                     </View>
 
                     <View style={styles.info}>
@@ -356,22 +460,41 @@ export default function SettingsScreen() {
 
                     </View>
 
-                    <Ionicons
-                        name="chevron-forward"
-                        size={22}
-                        color="#AAAAAA"
-                    />
+                    <View style={styles.arrowBox}>
+
+                        <Ionicons
+                            name="chevron-forward"
+                            size={18}
+                            color="#888888"
+                        />
+
+                    </View>
 
                 </Pressable>
 
                 {/* PIE */}
+
                 <View style={styles.footer}>
 
                     <View style={styles.footerLine} />
 
-                    <Text style={styles.footerTitle}>
-                        GYMPRO
-                    </Text>
+                    <View style={styles.footerBrand}>
+
+                        <View style={styles.footerIcon}>
+
+                            <Ionicons
+                                name="barbell"
+                                size={15}
+                                color="#FFFFFF"
+                            />
+
+                        </View>
+
+                        <Text style={styles.footerTitle}>
+                            GYMPRO
+                        </Text>
+
+                    </View>
 
                     <Text style={styles.version}>
                         Versión 1.0.0
@@ -387,9 +510,11 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
 
+    /* CONTENEDOR */
+
     container: {
         flex: 1,
-        backgroundColor: '#050505',
+        backgroundColor: '#070707',
     },
 
     scrollContent: {
@@ -398,48 +523,70 @@ const styles = StyleSheet.create({
         paddingBottom: 35,
     },
 
-    headerImage: {
+    /* IMAGEN */
+
+    imageContainer: {
         width: '100%',
         height: 165,
         borderRadius: 22,
-        marginBottom: 16,
-        resizeMode: 'contain',
+        overflow: 'hidden',
         backgroundColor: '#111111',
         borderWidth: 1,
         borderColor: '#292929',
+        marginBottom: 15,
     },
 
-    headerInfo: {
-        alignItems: 'center',
-        marginBottom: 24,
+    headerImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
     },
 
-    appName: {
-        fontSize: 27,
-        fontWeight: '900',
-        color: '#FFFFFF',
-        letterSpacing: 0.5,
-    },
+    /* MARCA */
 
-    appSubtitle: {
-        fontSize: 14,
-        color: '#B8B8B8',
-        marginTop: 5,
-        textAlign: 'center',
-    },
-
-    titleContainer: {
+    brandSection: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#101010',
-        borderRadius: 20,
-        padding: 16,
-        borderWidth: 1,
-        borderColor: '#292929',
-        marginBottom: 4,
+        marginBottom: 17,
+        paddingHorizontal: 3,
     },
 
-    titleIcon: {
+    brandIcon: {
+        width: 39,
+        height: 39,
+        borderRadius: 12,
+        backgroundColor: '#D90429',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 10,
+    },
+
+    brandText: {
+        fontSize: 16,
+        fontWeight: '900',
+        color: '#D90429',
+        letterSpacing: 2,
+    },
+
+    brandSubtitle: {
+        fontSize: 11,
+        color: '#777777',
+        marginTop: 1,
+    },
+
+    /* ENCABEZADO */
+
+    headerCard: {
+        backgroundColor: '#111111',
+        borderRadius: 20,
+        padding: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#292929',
+    },
+
+    headerIcon: {
         width: 54,
         height: 54,
         borderRadius: 17,
@@ -449,6 +596,10 @@ const styles = StyleSheet.create({
         marginRight: 14,
     },
 
+    headerInfo: {
+        flex: 1,
+    },
+
     title: {
         fontSize: 25,
         fontWeight: '900',
@@ -456,24 +607,47 @@ const styles = StyleSheet.create({
     },
 
     subtitle: {
-        fontSize: 13,
-        color: '#A7A7A7',
+        fontSize: 12,
+        color: '#888888',
         marginTop: 4,
+        lineHeight: 17,
+    },
+
+    /* SECCIONES */
+
+    sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 22,
+        marginBottom: 11,
+    },
+
+    redIndicator: {
+        width: 5,
+        height: 30,
+        borderRadius: 3,
+        backgroundColor: '#D90429',
+        marginRight: 10,
     },
 
     sectionTitle: {
-        fontSize: 18,
-        fontWeight: '800',
+        fontSize: 17,
+        fontWeight: '900',
         color: '#FFFFFF',
-        marginTop: 24,
-        marginBottom: 10,
-        paddingLeft: 4,
     },
+
+    sectionSubtitle: {
+        fontSize: 11,
+        color: '#777777',
+        marginTop: 2,
+    },
+
+    /* OPCIONES */
 
     optionCard: {
         backgroundColor: '#121212',
         borderRadius: 18,
-        padding: 14,
+        padding: 13,
         marginBottom: 10,
         flexDirection: 'row',
         alignItems: 'center',
@@ -487,8 +661,8 @@ const styles = StyleSheet.create({
             width: 0,
             height: 3,
         },
-        shadowOpacity: 0.35,
-        shadowRadius: 6,
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
     },
 
     iconBox: {
@@ -498,7 +672,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#26070D',
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 14,
+        marginRight: 13,
         borderWidth: 1,
         borderColor: '#450B16',
     },
@@ -509,17 +683,30 @@ const styles = StyleSheet.create({
     },
 
     optionTitle: {
-        fontSize: 16,
-        fontWeight: '800',
+        fontSize: 15,
+        fontWeight: '900',
         color: '#FFFFFF',
     },
 
     optionDescription: {
-        fontSize: 12,
-        color: '#A0A0A0',
-        marginTop: 5,
+        fontSize: 11,
+        color: '#929292',
+        marginTop: 4,
         lineHeight: 17,
     },
+
+    /* FLECHA */
+
+    arrowBox: {
+        width: 32,
+        height: 32,
+        borderRadius: 10,
+        backgroundColor: '#1D1D1D',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    /* FOOTER */
 
     footer: {
         alignItems: 'center',
@@ -530,19 +717,34 @@ const styles = StyleSheet.create({
         width: '35%',
         height: 1,
         backgroundColor: '#292929',
-        marginBottom: 18,
+        marginBottom: 15,
+    },
+
+    footerBrand: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    footerIcon: {
+        width: 27,
+        height: 27,
+        borderRadius: 8,
+        backgroundColor: '#D90429',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 7,
     },
 
     footerTitle: {
-        fontSize: 15,
+        fontSize: 14,
         fontWeight: '900',
         color: '#D90429',
         letterSpacing: 2,
     },
 
     version: {
-        color: '#777777',
-        fontSize: 11,
+        color: '#666666',
+        fontSize: 10,
         marginTop: 5,
     },
 

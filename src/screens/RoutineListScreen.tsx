@@ -55,7 +55,7 @@ export default function RoutineListScreen() {
             Animated.sequence([
 
                 Animated.timing(pulse, {
-                    toValue: 1.03,
+                    toValue: 1.04,
                     duration: 1200,
                     useNativeDriver: true,
                 }),
@@ -102,7 +102,6 @@ export default function RoutineListScreen() {
         );
     };
 
-    // FILTRAR LAS RUTINAS DEL CONTEXT
     const filteredRoutines =
         selectedFilter === 'Todos'
             ? routines
@@ -115,16 +114,35 @@ export default function RoutineListScreen() {
         <SafeAreaView style={styles.container}>
 
             {/* ENCABEZADO */}
+
             <View style={styles.header}>
 
-                <View style={styles.headerLeft}>
+                <View style={styles.headerContent}>
+
+                    <View style={styles.brandRow}>
+
+                        <View style={styles.brandIcon}>
+
+                            <Ionicons
+                                name="barbell"
+                                size={21}
+                                color="#FFFFFF"
+                            />
+
+                        </View>
+
+                        <Text style={styles.brandText}>
+                            GYMPRO
+                        </Text>
+
+                    </View>
 
                     <Text style={styles.title}>
                         Mis Rutinas
                     </Text>
 
                     <Text style={styles.subtitle}>
-                        {filteredRoutines.length} rutinas disponibles
+                        Organiza tus entrenamientos y alcanza tus objetivos
                     </Text>
 
                 </View>
@@ -134,28 +152,93 @@ export default function RoutineListScreen() {
                         transform: [{ scale: pulse }],
                     }}
                 >
+
                     <Pressable
                         style={styles.addButton}
                         onPress={() =>
                             navigation.navigate('AddRoutine')
                         }
                     >
+
                         <Ionicons
                             name="add"
-                            size={30}
+                            size={29}
                             color="#FFFFFF"
                         />
+
                     </Pressable>
+
                 </Animated.View>
 
             </View>
 
+            {/* RESUMEN */}
+
+            <View style={styles.summaryCard}>
+
+                <View style={styles.summaryIcon}>
+
+                    <Ionicons
+                        name="fitness"
+                        size={22}
+                        color="#D90429"
+                    />
+
+                </View>
+
+                <View style={styles.summaryInfo}>
+
+                    <Text style={styles.summaryNumber}>
+                        {filteredRoutines.length}
+                    </Text>
+
+                    <Text style={styles.summaryLabel}>
+                        {filteredRoutines.length === 1
+                            ? 'rutina disponible'
+                            : 'rutinas disponibles'}
+                    </Text>
+
+                </View>
+
+                <View style={styles.summaryLine} />
+
+                <View style={styles.summaryInfo}>
+
+                    <Text style={styles.summaryNumber}>
+                        {routines.filter(
+                            routine => routine.featured
+                        ).length}
+                    </Text>
+
+                    <Text style={styles.summaryLabel}>
+                        destacada
+                    </Text>
+
+                </View>
+
+            </View>
+
             {/* FILTROS */}
+
             <View style={styles.filterSection}>
 
-                <Text style={styles.filterTitle}>
-                    Filtrar por músculo
-                </Text>
+                <View style={styles.sectionHeader}>
+
+                    <View style={styles.redIndicator} />
+
+                    <View>
+
+                        <Text style={styles.sectionTitle}>
+                            Filtrar rutinas
+                        </Text>
+
+                        <Text style={styles.sectionSubtitle}>
+                            Selecciona un grupo muscular
+                        </Text>
+
+                    </View>
+
+                </View>
 
                 <View style={styles.filterContainer}>
 
@@ -165,6 +248,7 @@ export default function RoutineListScreen() {
                             selectedFilter === filter;
 
                         return (
+
                             <Pressable
                                 key={filter}
                                 style={[
@@ -177,6 +261,16 @@ export default function RoutineListScreen() {
                                 }
                             >
 
+                                {isSelected && (
+
+                                    <Ionicons
+                                        name="checkmark-circle"
+                                        size={15}
+                                        color="#FFFFFF"
+                                    />
+
+                                )}
+
                                 <Text
                                     style={[
                                         styles.filterText,
@@ -188,25 +282,43 @@ export default function RoutineListScreen() {
                                 </Text>
 
                             </Pressable>
+
                         );
+
                     })}
 
                 </View>
 
             </View>
 
-            {/* INDICADOR */}
-            <View style={styles.sectionHeader}>
+            {/* TÍTULO DE LISTA */}
 
-                <View style={styles.redIndicator} />
+            <View style={styles.listHeader}>
 
-                <Text style={styles.sectionText}>
-                    Tus entrenamientos
-                </Text>
+                <View>
+
+                    <Text style={styles.listTitle}>
+                        Mis entrenamientos
+                    </Text>
+
+                    <Text style={styles.listSubtitle}>
+                        Tus rutinas guardadas
+                    </Text>
+
+                </View>
+
+                <View style={styles.countBadge}>
+
+                    <Text style={styles.countBadgeText}>
+                        {filteredRoutines.length}
+                    </Text>
+
+                </View>
 
             </View>
 
             {/* LISTA */}
+
             <FlatList
                 data={filteredRoutines}
                 keyExtractor={(item) => item.id}
@@ -214,14 +326,17 @@ export default function RoutineListScreen() {
                 contentContainerStyle={styles.listContent}
 
                 ListEmptyComponent={
+
                     <View style={styles.emptyContainer}>
 
                         <View style={styles.emptyIcon}>
+
                             <Ionicons
                                 name="fitness-outline"
-                                size={52}
+                                size={48}
                                 color="#D90429"
                             />
+
                         </View>
 
                         <Text style={styles.emptyTitle}>
@@ -232,7 +347,27 @@ export default function RoutineListScreen() {
                             No existen rutinas para este grupo muscular.
                         </Text>
 
+                        <Pressable
+                            style={styles.emptyButton}
+                            onPress={() =>
+                                navigation.navigate('AddRoutine')
+                            }
+                        >
+
+                            <Ionicons
+                                name="add"
+                                size={19}
+                                color="#FFFFFF"
+                            />
+
+                            <Text style={styles.emptyButtonText}>
+                                Crear rutina
+                            </Text>
+
+                        </Pressable>
+
                     </View>
+
                 }
 
                 renderItem={({ item }) => (
@@ -246,6 +381,7 @@ export default function RoutineListScreen() {
                     >
 
                         {/* IMAGEN */}
+
                         <View style={styles.imageContainer}>
 
                             <Image
@@ -254,11 +390,12 @@ export default function RoutineListScreen() {
                             />
 
                             {item.featured && (
+
                                 <View style={styles.featuredBadge}>
 
                                     <Ionicons
                                         name="star"
-                                        size={14}
+                                        size={12}
                                         color="#FFFFFF"
                                     />
 
@@ -267,11 +404,13 @@ export default function RoutineListScreen() {
                                     </Text>
 
                                 </View>
+
                             )}
 
                         </View>
 
                         {/* INFORMACIÓN */}
+
                         <View style={styles.info}>
 
                             <Text
@@ -283,11 +422,15 @@ export default function RoutineListScreen() {
 
                             <View style={styles.muscleContainer}>
 
-                                <Ionicons
-                                    name="body-outline"
-                                    size={14}
-                                    color="#D90429"
-                                />
+                                <View style={styles.detailIconRed}>
+
+                                    <Ionicons
+                                        name="body-outline"
+                                        size={13}
+                                        color="#D90429"
+                                    />
+
+                                </View>
 
                                 <Text style={styles.description}>
                                     {item.muscleGroup}
@@ -297,14 +440,18 @@ export default function RoutineListScreen() {
 
                             <View style={styles.durationContainer}>
 
-                                <Ionicons
-                                    name="time-outline"
-                                    size={14}
-                                    color="#777777"
-                                />
+                                <View style={styles.detailIconGray}>
+
+                                    <Ionicons
+                                        name="time-outline"
+                                        size={13}
+                                        color="#777777"
+                                    />
+
+                                </View>
 
                                 <Text style={styles.details}>
-                                    {item.duration} minutos
+                                    {item.duration} min
                                 </Text>
 
                             </View>
@@ -312,9 +459,11 @@ export default function RoutineListScreen() {
                         </View>
 
                         {/* ACCIONES */}
+
                         <View style={styles.actions}>
 
                             {/* DESTACAR */}
+
                             <Pressable
                                 style={[
                                     styles.actionButton,
@@ -326,18 +475,21 @@ export default function RoutineListScreen() {
                                     toggleFeatured(item.id)
                                 }
                             >
+
                                 <Ionicons
                                     name={
                                         item.featured
                                             ? 'star'
                                             : 'star-outline'
                                     }
-                                    size={20}
+                                    size={19}
                                     color="#FFFFFF"
                                 />
+
                             </Pressable>
 
                             {/* VER */}
+
                             <Pressable
                                 style={[
                                     styles.actionButton,
@@ -352,14 +504,17 @@ export default function RoutineListScreen() {
                                     )
                                 }
                             >
+
                                 <Ionicons
                                     name="eye-outline"
-                                    size={20}
+                                    size={19}
                                     color="#FFFFFF"
                                 />
+
                             </Pressable>
 
                             {/* EDITAR */}
+
                             <Pressable
                                 style={[
                                     styles.actionButton,
@@ -374,14 +529,17 @@ export default function RoutineListScreen() {
                                     )
                                 }
                             >
+
                                 <Ionicons
                                     name="pencil-outline"
-                                    size={20}
+                                    size={19}
                                     color="#FFFFFF"
                                 />
+
                             </Pressable>
 
                             {/* ELIMINAR */}
+
                             <Pressable
                                 style={[
                                     styles.actionButton,
@@ -394,11 +552,13 @@ export default function RoutineListScreen() {
                                     )
                                 }
                             >
+
                                 <Ionicons
                                     name="trash-outline"
-                                    size={20}
+                                    size={19}
                                     color="#FFFFFF"
                                 />
+
                             </Pressable>
 
                         </View>
@@ -414,85 +574,185 @@ export default function RoutineListScreen() {
 
 const styles = StyleSheet.create({
 
-    /* CONTENEDOR GENERAL */
+    /* CONTENEDOR */
+
     container: {
         flex: 1,
-        backgroundColor: '#050505',
+        backgroundColor: '#070707',
     },
 
     /* ENCABEZADO */
+
     header: {
         paddingHorizontal: 20,
-        paddingTop: 15,
-        paddingBottom: 15,
+        paddingTop: 10,
+        paddingBottom: 13,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
     },
 
-    headerLeft: {
+    headerContent: {
         flex: 1,
         paddingRight: 15,
     },
 
+    brandRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+
+    brandIcon: {
+        width: 34,
+        height: 34,
+        borderRadius: 10,
+        backgroundColor: '#D90429',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 9,
+    },
+
+    brandText: {
+        fontSize: 14,
+        fontWeight: '900',
+        color: '#D90429',
+        letterSpacing: 2,
+    },
+
     title: {
-        fontSize: 30,
+        fontSize: 29,
         fontWeight: '900',
         color: '#FFFFFF',
-        letterSpacing: 0.3,
+        letterSpacing: 0.2,
     },
 
     subtitle: {
-        fontSize: 14,
-        color: '#AAAAAA',
-        marginTop: 5,
+        fontSize: 12,
+        color: '#8E8E8E',
+        marginTop: 4,
+        lineHeight: 17,
     },
 
     /* BOTÓN AGREGAR */
+
     addButton: {
         width: 54,
         height: 54,
-        borderRadius: 27,
+        borderRadius: 17,
         backgroundColor: '#D90429',
         justifyContent: 'center',
         alignItems: 'center',
 
-        elevation: 7,
+        elevation: 8,
 
         shadowColor: '#D90429',
         shadowOffset: {
             width: 0,
-            height: 3,
+            height: 4,
         },
-        shadowOpacity: 0.35,
-        shadowRadius: 6,
+        shadowOpacity: 0.38,
+        shadowRadius: 7,
+    },
+
+    /* RESUMEN */
+
+    summaryCard: {
+        marginHorizontal: 18,
+        marginBottom: 18,
+        backgroundColor: '#111111',
+        borderRadius: 18,
+        paddingVertical: 13,
+        paddingHorizontal: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#252525',
+    },
+
+    summaryIcon: {
+        width: 43,
+        height: 43,
+        borderRadius: 13,
+        backgroundColor: '#26070D',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 11,
+    },
+
+    summaryInfo: {
+        flex: 1,
+    },
+
+    summaryNumber: {
+        fontSize: 20,
+        fontWeight: '900',
+        color: '#FFFFFF',
+    },
+
+    summaryLabel: {
+        fontSize: 11,
+        color: '#858585',
+        marginTop: 1,
+    },
+
+    summaryLine: {
+        width: 1,
+        height: 34,
+        backgroundColor: '#303030',
+        marginHorizontal: 13,
     },
 
     /* FILTROS */
+
     filterSection: {
         paddingHorizontal: 18,
-        marginBottom: 15,
+        marginBottom: 17,
     },
 
-    filterTitle: {
-        fontSize: 13,
-        fontWeight: '700',
-        color: '#AAAAAA',
-        marginBottom: 10,
+    sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 12,
+    },
+
+    redIndicator: {
+        width: 5,
+        height: 30,
+        borderRadius: 3,
+        backgroundColor: '#D90429',
+        marginRight: 10,
+    },
+
+    sectionTitle: {
+        fontSize: 16,
+        fontWeight: '900',
+        color: '#FFFFFF',
+    },
+
+    sectionSubtitle: {
+        fontSize: 11,
+        color: '#777777',
+        marginTop: 2,
     },
 
     filterContainer: {
         flexDirection: 'row',
-        gap: 8,
+        gap: 7,
     },
 
     filterButton: {
-        paddingHorizontal: 15,
-        paddingVertical: 9,
-        borderRadius: 20,
-        backgroundColor: '#1A1A1A',
+        flex: 1,
+        minHeight: 39,
+        paddingHorizontal: 7,
+        borderRadius: 12,
+        backgroundColor: '#151515',
         borderWidth: 1,
-        borderColor: '#333333',
+        borderColor: '#2D2D2D',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        gap: 4,
     },
 
     filterButtonActive: {
@@ -501,93 +761,117 @@ const styles = StyleSheet.create({
     },
 
     filterText: {
-        color: '#AAAAAA',
-        fontSize: 13,
-        fontWeight: '700',
+        color: '#9A9A9A',
+        fontSize: 12,
+        fontWeight: '800',
     },
 
     filterTextActive: {
         color: '#FFFFFF',
     },
 
-    /* ENCABEZADO DE SECCIÓN */
-    sectionHeader: {
+    /* ENCABEZADO DE LISTA */
+
+    listHeader: {
+        marginHorizontal: 18,
+        marginBottom: 11,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 20,
-        marginBottom: 12,
+        justifyContent: 'space-between',
     },
 
-    redIndicator: {
-        width: 5,
-        height: 22,
-        borderRadius: 3,
-        backgroundColor: '#D90429',
-        marginRight: 9,
-    },
-
-    sectionText: {
-        fontSize: 16,
-        fontWeight: '800',
+    listTitle: {
+        fontSize: 18,
+        fontWeight: '900',
         color: '#FFFFFF',
     },
 
+    listSubtitle: {
+        fontSize: 11,
+        color: '#777777',
+        marginTop: 2,
+    },
+
+    countBadge: {
+        minWidth: 34,
+        height: 30,
+        paddingHorizontal: 9,
+        borderRadius: 10,
+        backgroundColor: '#26070D',
+        borderWidth: 1,
+        borderColor: '#4A0B17',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    countBadgeText: {
+        fontSize: 13,
+        fontWeight: '900',
+        color: '#D90429',
+    },
+
     /* LISTA */
+
     listContent: {
         paddingHorizontal: 18,
         paddingBottom: 30,
     },
 
-    /* CARD */
+    /* TARJETA */
+
     routineCard: {
         backgroundColor: '#FFFFFF',
         borderRadius: 19,
-        padding: 12,
-        marginBottom: 13,
+        padding: 10,
+        marginBottom: 12,
         flexDirection: 'row',
         alignItems: 'center',
 
         borderWidth: 1,
-        borderColor: '#E7E7E7',
+        borderColor: '#E6E6E6',
 
-        elevation: 6,
+        elevation: 5,
 
         shadowColor: '#000000',
         shadowOffset: {
             width: 0,
             height: 3,
         },
-        shadowOpacity: 0.35,
-        shadowRadius: 6,
+        shadowOpacity: 0.25,
+        shadowRadius: 5,
     },
 
-    /* CARD DESTACADA */
     featuredCard: {
         borderWidth: 2,
         borderColor: '#D90429',
-    },
-
-    /* CONTENEDOR IMAGEN */
-    imageContainer: {
-        position: 'relative',
-        marginRight: 13,
+        backgroundColor: '#FFFDFD',
     },
 
     /* IMAGEN */
-    routineImage: {
-        width: 82,
-        height: 82,
+
+    imageContainer: {
+        width: 84,
+        height: 84,
         borderRadius: 15,
+        overflow: 'hidden',
+        position: 'relative',
+        marginRight: 12,
+    },
+
+    routineImage: {
+        width: '100%',
+        height: '100%',
         resizeMode: 'cover',
     },
 
-    /* ETIQUETA DESTACADA */
+    /* DESTACADA */
+
     featuredBadge: {
         position: 'absolute',
         bottom: 5,
         left: 5,
         right: 5,
-        height: 22,
+        height: 21,
         borderRadius: 7,
         backgroundColor: '#D90429',
         flexDirection: 'row',
@@ -596,23 +880,25 @@ const styles = StyleSheet.create({
     },
 
     featuredBadgeText: {
-        fontSize: 8,
+        fontSize: 7,
         fontWeight: '900',
         color: '#FFFFFF',
         marginLeft: 3,
+        letterSpacing: 0.3,
     },
 
     /* INFORMACIÓN */
+
     info: {
         flex: 1,
-        paddingRight: 7,
+        paddingRight: 6,
     },
 
     routineTitle: {
-        fontSize: 17,
-        fontWeight: '800',
+        fontSize: 16,
+        fontWeight: '900',
         color: '#171717',
-        lineHeight: 22,
+        lineHeight: 21,
     },
 
     muscleContainer: {
@@ -621,9 +907,18 @@ const styles = StyleSheet.create({
         marginTop: 7,
     },
 
+    detailIconRed: {
+        width: 22,
+        height: 22,
+        borderRadius: 7,
+        backgroundColor: '#FDECEF',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
     description: {
-        fontSize: 13,
-        fontWeight: '700',
+        fontSize: 12,
+        fontWeight: '800',
         color: '#D90429',
         marginLeft: 5,
     },
@@ -631,25 +926,36 @@ const styles = StyleSheet.create({
     durationContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 6,
+        marginTop: 5,
+    },
+
+    detailIconGray: {
+        width: 22,
+        height: 22,
+        borderRadius: 7,
+        backgroundColor: '#F1F1F1',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     details: {
-        fontSize: 12,
+        fontSize: 11,
         color: '#666666',
         marginLeft: 5,
+        fontWeight: '600',
     },
 
-    /* BOTONES DE ACCIÓN */
+    /* ACCIONES */
+
     actions: {
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 7,
+        gap: 6,
     },
 
     actionButton: {
-        width: 38,
-        height: 38,
+        width: 36,
+        height: 36,
         borderRadius: 11,
         justifyContent: 'center',
         alignItems: 'center',
@@ -676,16 +982,17 @@ const styles = StyleSheet.create({
     },
 
     /* ESTADO VACÍO */
+
     emptyContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 100,
+        paddingTop: 75,
         paddingHorizontal: 30,
     },
 
     emptyIcon: {
-        width: 85,
-        height: 85,
+        width: 86,
+        height: 86,
         borderRadius: 25,
         backgroundColor: '#26070D',
         borderWidth: 1,
@@ -696,17 +1003,35 @@ const styles = StyleSheet.create({
 
     emptyTitle: {
         fontSize: 22,
-        fontWeight: '800',
+        fontWeight: '900',
         color: '#FFFFFF',
-        marginTop: 18,
+        marginTop: 17,
     },
 
     emptyText: {
-        fontSize: 14,
+        fontSize: 13,
         color: '#999999',
         marginTop: 7,
         textAlign: 'center',
-        lineHeight: 21,
+        lineHeight: 20,
+    },
+
+    emptyButton: {
+        marginTop: 18,
+        paddingHorizontal: 18,
+        height: 42,
+        borderRadius: 12,
+        backgroundColor: '#D90429',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 6,
+    },
+
+    emptyButtonText: {
+        color: '#FFFFFF',
+        fontSize: 13,
+        fontWeight: '900',
     },
 
 });
