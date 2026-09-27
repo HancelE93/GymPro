@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
     Text,
@@ -26,6 +26,13 @@ const imagenes = {
     Piernas: require('../assets/images/piernas.jpg'),
 };
 
+const filtros = [
+    'Todos',
+    'Pecho',
+    'Espalda',
+    'Piernas',
+];
+
 export default function RoutineListScreen() {
 
     const navigation = useNavigation<any>();
@@ -34,6 +41,8 @@ export default function RoutineListScreen() {
         routines,
         deleteRoutine,
     } = useRoutines();
+
+    const [selectedFilter, setSelectedFilter] = useState('Todos');
 
     const pulse = useRef(
         new Animated.Value(1)
@@ -92,6 +101,15 @@ export default function RoutineListScreen() {
         );
     };
 
+    // FILTRAR LAS RUTINAS DEL CONTEXT
+    const filteredRoutines =
+        selectedFilter === 'Todos'
+            ? routines
+            : routines.filter(
+                routine =>
+                    routine.muscleGroup === selectedFilter
+            );
+
     return (
         <SafeAreaView style={styles.container}>
 
@@ -105,7 +123,7 @@ export default function RoutineListScreen() {
                     </Text>
 
                     <Text style={styles.subtitle}>
-                        {routines.length} rutinas disponibles
+                        {filteredRoutines.length} rutinas disponibles
                     </Text>
 
                 </View>
@@ -131,6 +149,51 @@ export default function RoutineListScreen() {
 
             </View>
 
+            {/* FILTROS */}
+            <View style={styles.filterSection}>
+
+                <Text style={styles.filterTitle}>
+                    Filtrar por músculo
+                </Text>
+
+                <View style={styles.filterContainer}>
+
+                    {filtros.map((filter) => {
+
+                        const isSelected =
+                            selectedFilter === filter;
+
+                        return (
+                            <Pressable
+                                key={filter}
+                                style={[
+                                    styles.filterButton,
+                                    isSelected &&
+                                    styles.filterButtonActive,
+                                ]}
+                                onPress={() =>
+                                    setSelectedFilter(filter)
+                                }
+                            >
+
+                                <Text
+                                    style={[
+                                        styles.filterText,
+                                        isSelected &&
+                                        styles.filterTextActive,
+                                    ]}
+                                >
+                                    {filter}
+                                </Text>
+
+                            </Pressable>
+                        );
+                    })}
+
+                </View>
+
+            </View>
+
             {/* INDICADOR */}
             <View style={styles.sectionHeader}>
 
@@ -144,7 +207,7 @@ export default function RoutineListScreen() {
 
             {/* LISTA */}
             <FlatList
-                data={routines}
+                data={filteredRoutines}
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.listContent}
@@ -165,7 +228,7 @@ export default function RoutineListScreen() {
                         </Text>
 
                         <Text style={styles.emptyText}>
-                            Pulsa el botón + para crear tu primera rutina.
+                            No existen rutinas para este grupo muscular.
                         </Text>
 
                     </View>
@@ -353,6 +416,48 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.35,
         shadowRadius: 6,
+    },
+
+    /* FILTROS */
+    filterSection: {
+        paddingHorizontal: 18,
+        marginBottom: 15,
+    },
+
+    filterTitle: {
+        fontSize: 13,
+        fontWeight: '700',
+        color: '#AAAAAA',
+        marginBottom: 10,
+    },
+
+    filterContainer: {
+        flexDirection: 'row',
+        gap: 8,
+    },
+
+    filterButton: {
+        paddingHorizontal: 15,
+        paddingVertical: 9,
+        borderRadius: 20,
+        backgroundColor: '#1A1A1A',
+        borderWidth: 1,
+        borderColor: '#333333',
+    },
+
+    filterButtonActive: {
+        backgroundColor: '#D90429',
+        borderColor: '#D90429',
+    },
+
+    filterText: {
+        color: '#AAAAAA',
+        fontSize: 13,
+        fontWeight: '700',
+    },
+
+    filterTextActive: {
+        color: '#FFFFFF',
     },
 
     /* ENCABEZADO DE SECCIÓN */

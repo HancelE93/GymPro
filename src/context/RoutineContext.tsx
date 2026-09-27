@@ -1,3 +1,4 @@
+
 import React, {
     createContext,
     useContext,
@@ -11,6 +12,7 @@ export type Routine = {
     muscleGroup: string;
     duration: number;
     createdAt: string;
+    featured: boolean;
 };
 
 type RoutineContextType = {
@@ -26,6 +28,8 @@ type RoutineContextType = {
     ) => void;
 
     deleteRoutine: (id: string) => void;
+
+    toggleFeatured: (id: string) => void;
 };
 
 const RoutineContext = createContext<
@@ -45,6 +49,7 @@ function RoutineProvider({
             muscleGroup: 'Pecho',
             duration: 45,
             createdAt: new Date().toLocaleDateString(),
+            featured: false,
         },
         {
             id: '2',
@@ -52,6 +57,7 @@ function RoutineProvider({
             muscleGroup: 'Espalda',
             duration: 50,
             createdAt: new Date().toLocaleDateString(),
+            featured: false,
         },
         {
             id: '3',
@@ -59,6 +65,7 @@ function RoutineProvider({
             muscleGroup: 'Piernas',
             duration: 55,
             createdAt: new Date().toLocaleDateString(),
+            featured: false,
         },
     ]);
 
@@ -104,6 +111,26 @@ function RoutineProvider({
         );
     };
 
+    const toggleFeatured = (id: string) => {
+
+        setRoutines((currentRoutines) =>
+            currentRoutines.map((routine) => {
+
+                if (routine.id === id) {
+                    return {
+                        ...routine,
+                        featured: !routine.featured,
+                    };
+                }
+
+                return {
+                    ...routine,
+                    featured: false,
+                };
+            })
+        );
+    };
+
     return (
         <RoutineContext.Provider
             value={{
@@ -111,6 +138,7 @@ function RoutineProvider({
                 addRoutine,
                 updateRoutine,
                 deleteRoutine,
+                toggleFeatured,
             }}
         >
             {children}
@@ -119,6 +147,7 @@ function RoutineProvider({
 }
 
 export function useRoutines() {
+
     const context = useContext(RoutineContext);
 
     if (!context) {

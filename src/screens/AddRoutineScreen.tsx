@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import {
     Alert,
     KeyboardAvoidingView,
@@ -10,20 +9,14 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    SafeAreaView,
 } from 'react-native';
-
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRoutines } from '../context/RoutineContext';
 
 export default function AddRoutineScreen({ navigation, route }: any) {
 
-    const {
-        routines,
-        addRoutine,
-        updateRoutine,
-    } = useRoutines();
+    const { routines, addRoutine, updateRoutine } = useRoutines();
 
     const idToEdit = route.params?.id;
 
@@ -32,23 +25,17 @@ export default function AddRoutineScreen({ navigation, route }: any) {
     const [durationString, setDurationString] = useState('');
 
     useEffect(() => {
-
         if (idToEdit) {
-
-            const routineFound = routines.find(
+            const routineToEdit = routines.find(
                 routine => routine.id === idToEdit
             );
 
-            if (routineFound) {
-                setName(routineFound.name);
-                setMuscleGroup(routineFound.muscleGroup);
-                setDurationString(
-                    routineFound.duration.toString()
-                );
+            if (routineToEdit) {
+                setName(routineToEdit.name);
+                setMuscleGroup(routineToEdit.muscleGroup);
+                setDurationString(routineToEdit.duration.toString());
             }
-
         }
-
     }, [idToEdit, routines]);
 
     const handleSave = () => {
@@ -60,7 +47,7 @@ export default function AddRoutineScreen({ navigation, route }: any) {
         ) {
             Alert.alert(
                 'Datos incompletos',
-                'Completa todos los campos.'
+                'Por favor completa todos los campos.'
             );
             return;
         }
@@ -70,7 +57,7 @@ export default function AddRoutineScreen({ navigation, route }: any) {
         if (isNaN(durationNumber)) {
             Alert.alert(
                 'Duración inválida',
-                'La duración debe ser un número válido.'
+                'La duración debe ser un número.'
             );
             return;
         }
@@ -78,7 +65,7 @@ export default function AddRoutineScreen({ navigation, route }: any) {
         if (durationNumber <= 0) {
             Alert.alert(
                 'Duración inválida',
-                'La duración debe ser mayor que 0.'
+                'La duración debe ser mayor a 0 minutos.'
             );
             return;
         }
@@ -89,6 +76,12 @@ export default function AddRoutineScreen({ navigation, route }: any) {
                 name: name.trim(),
                 muscleGroup: muscleGroup.trim(),
                 duration: durationNumber,
+
+                // Conservamos si la rutina ya estaba destacada
+                featured:
+                    routines.find(
+                        routine => routine.id === idToEdit
+                    )?.featured ?? false,
             });
 
         } else {
@@ -97,8 +90,10 @@ export default function AddRoutineScreen({ navigation, route }: any) {
                 name: name.trim(),
                 muscleGroup: muscleGroup.trim(),
                 duration: durationNumber,
-            });
 
+                // Toda nueva rutina comienza sin destacar
+                featured: false,
+            });
         }
 
         navigation.goBack();
@@ -106,174 +101,136 @@ export default function AddRoutineScreen({ navigation, route }: any) {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-
             <KeyboardAvoidingView
-                style={styles.flex}
-                behavior={
-                    Platform.OS === 'ios'
-                        ? 'padding'
-                        : undefined
-                }
+                style={styles.container}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             >
 
                 <ScrollView
-                    showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.scrollContent}
                     keyboardShouldPersistTaps="handled"
                 >
 
-                    {/* ENCABEZADO */}
                     <View style={styles.header}>
-
-                        <View style={styles.headerIcon}>
+                        <View style={styles.iconContainer}>
                             <Ionicons
-                                name={
-                                    idToEdit
-                                        ? 'create-outline'
-                                        : 'add-circle-outline'
-                                }
-                                size={34}
-                                color="#D90429"
+                                name="barbell-outline"
+                                size={32}
+                                color="#FFFFFF"
                             />
                         </View>
 
                         <Text style={styles.title}>
-                            {idToEdit
-                                ? 'Editar rutina'
-                                : 'Nueva rutina'}
+                            {idToEdit ? 'Editar rutina' : 'Nueva rutina'}
                         </Text>
 
                         <Text style={styles.subtitle}>
                             {idToEdit
-                                ? 'Actualiza la información de tu entrenamiento'
-                                : 'Crea una nueva rutina para tu entrenamiento'}
+                                ? 'Actualiza los datos de tu entrenamiento'
+                                : 'Crea una nueva rutina de entrenamiento'}
                         </Text>
-
                     </View>
 
-                    {/* FORMULARIO */}
                     <View style={styles.formCard}>
 
-                        {/* NOMBRE */}
                         <Text style={styles.label}>
                             Nombre de la rutina
                         </Text>
 
                         <View style={styles.inputContainer}>
-
                             <Ionicons
                                 name="create-outline"
-                                size={21}
+                                size={20}
                                 color="#D90429"
                             />
 
                             <TextInput
                                 style={styles.input}
+                                placeholder="Ej. Pecho y Tríceps"
+                                placeholderTextColor="#999"
                                 value={name}
                                 onChangeText={setName}
-                                placeholder="Ej. Pecho y Tríceps"
-                                placeholderTextColor="#999999"
                             />
-
                         </View>
 
-                        {/* GRUPO MUSCULAR */}
                         <Text style={styles.label}>
                             Grupo muscular
                         </Text>
 
                         <View style={styles.inputContainer}>
-
                             <Ionicons
                                 name="fitness-outline"
-                                size={21}
+                                size={20}
                                 color="#D90429"
                             />
 
                             <TextInput
                                 style={styles.input}
+                                placeholder="Ej. Pecho"
+                                placeholderTextColor="#999"
                                 value={muscleGroup}
                                 onChangeText={setMuscleGroup}
-                                placeholder="Ej. Pecho"
-                                placeholderTextColor="#999999"
                             />
-
                         </View>
 
-                        {/* DURACIÓN */}
                         <Text style={styles.label}>
                             Duración en minutos
                         </Text>
 
                         <View style={styles.inputContainer}>
-
                             <Ionicons
                                 name="time-outline"
-                                size={21}
+                                size={20}
                                 color="#D90429"
                             />
 
                             <TextInput
                                 style={styles.input}
+                                placeholder="Ej. 45"
+                                placeholderTextColor="#999"
+                                keyboardType="numeric"
                                 value={durationString}
                                 onChangeText={setDurationString}
-                                keyboardType="numeric"
-                                placeholder="Ej. 45"
-                                placeholderTextColor="#999999"
                             />
-
                         </View>
 
-                        {/* BOTÓN */}
                         <TouchableOpacity
                             style={styles.saveButton}
                             onPress={handleSave}
                             activeOpacity={0.8}
                         >
-
                             <Ionicons
-                                name={
-                                    idToEdit
-                                        ? 'checkmark-circle-outline'
-                                        : 'save-outline'
-                                }
+                                name={idToEdit ? 'checkmark-circle-outline' : 'add-circle-outline'}
                                 size={22}
                                 color="#FFFFFF"
                             />
 
                             <Text style={styles.saveButtonText}>
                                 {idToEdit
-                                    ? 'Actualizar rutina'
-                                    : 'Guardar rutina'}
+                                    ? 'Guardar cambios'
+                                    : 'Crear rutina'}
                             </Text>
-
                         </TouchableOpacity>
 
                     </View>
 
-                    {/* CONSEJO */}
                     <View style={styles.tipCard}>
 
-                        <View style={styles.tipIcon}>
-                            <Ionicons
-                                name="bulb-outline"
-                                size={22}
-                                color="#D90429"
-                            />
-                        </View>
+                        <Ionicons
+                            name="bulb-outline"
+                            size={24}
+                            color="#D90429"
+                        />
 
                         <View style={styles.tipContent}>
-
                             <Text style={styles.tipTitle}>
                                 Consejo GymPro
                             </Text>
 
                             <Text style={styles.tipText}>
-                                Usa un nombre claro y una duración
-                                aproximada para organizar mejor
-                                tus entrenamientos.
+                                Mantén tus rutinas organizadas para llevar
+                                un mejor seguimiento de tus entrenamientos.
                             </Text>
-
                         </View>
 
                     </View>
@@ -281,7 +238,6 @@ export default function AddRoutineScreen({ navigation, route }: any) {
                 </ScrollView>
 
             </KeyboardAvoidingView>
-
         </SafeAreaView>
     );
 }
@@ -290,166 +246,123 @@ const styles = StyleSheet.create({
 
     safeArea: {
         flex: 1,
-        backgroundColor: '#050505',
+        backgroundColor: '#0D0D0D',
     },
 
-    flex: {
+    container: {
         flex: 1,
+        backgroundColor: '#0D0D0D',
     },
 
     scrollContent: {
-        paddingHorizontal: 18,
-        paddingTop: 12,
+        padding: 20,
         paddingBottom: 40,
     },
 
-    /* ENCABEZADO */
     header: {
         alignItems: 'center',
-        marginBottom: 22,
+        marginBottom: 25,
     },
 
-    headerIcon: {
-        width: 76,
-        height: 76,
-        borderRadius: 23,
-        backgroundColor: '#FDECEF',
-        borderWidth: 1,
-        borderColor: '#450B16',
-        justifyContent: 'center',
+    iconContainer: {
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        backgroundColor: '#D90429',
         alignItems: 'center',
+        justifyContent: 'center',
         marginBottom: 15,
     },
 
     title: {
-        fontSize: 29,
-        fontWeight: '900',
+        fontSize: 28,
+        fontWeight: 'bold',
         color: '#FFFFFF',
-        textAlign: 'center',
+        marginBottom: 8,
     },
 
     subtitle: {
         fontSize: 14,
-        color: '#A7A7A7',
-        marginTop: 7,
+        color: '#AAAAAA',
         textAlign: 'center',
-        lineHeight: 20,
-        paddingHorizontal: 12,
     },
 
-    /* FORMULARIO */
     formCard: {
         backgroundColor: '#FFFFFF',
-        borderRadius: 21,
+        borderRadius: 20,
         padding: 20,
-
-        borderWidth: 1,
-        borderColor: '#E7E7E7',
-
-        elevation: 6,
-
-        shadowColor: '#000000',
-        shadowOffset: {
-            width: 0,
-            height: 3,
-        },
-        shadowOpacity: 0.28,
-        shadowRadius: 6,
+        marginBottom: 20,
     },
 
     label: {
         fontSize: 14,
-        fontWeight: '800',
+        fontWeight: 'bold',
         color: '#222222',
         marginBottom: 8,
-        marginTop: 8,
+        marginTop: 5,
     },
 
     inputContainer: {
-        minHeight: 55,
-        borderWidth: 1,
-        borderColor: '#D9D9D9',
-        borderRadius: 14,
-        backgroundColor: '#FAFAFA',
         flexDirection: 'row',
         alignItems: 'center',
+        backgroundColor: '#F5F5F5',
+        borderRadius: 12,
         paddingHorizontal: 14,
-        marginBottom: 11,
+        marginBottom: 18,
+        borderWidth: 1,
+        borderColor: '#E5E5E5',
     },
 
     input: {
         flex: 1,
-        fontSize: 15,
-        color: '#222222',
+        height: 52,
         marginLeft: 10,
+        color: '#222222',
+        fontSize: 15,
     },
 
-    /* BOTÓN */
     saveButton: {
-        marginTop: 18,
         height: 55,
-        borderRadius: 15,
         backgroundColor: '#D90429',
+        borderRadius: 14,
         flexDirection: 'row',
-        justifyContent: 'center',
         alignItems: 'center',
-
-        elevation: 5,
-
-        shadowColor: '#D90429',
-        shadowOffset: {
-            width: 0,
-            height: 3,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        justifyContent: 'center',
+        marginTop: 8,
     },
 
     saveButtonText: {
         color: '#FFFFFF',
         fontSize: 16,
-        fontWeight: '900',
+        fontWeight: 'bold',
         marginLeft: 8,
     },
 
-    /* CONSEJO */
     tipCard: {
-        marginTop: 16,
-        backgroundColor: '#121212',
-        borderRadius: 18,
-        padding: 14,
+        backgroundColor: '#1A1A1A',
+        borderRadius: 16,
+        padding: 18,
         flexDirection: 'row',
-        alignItems: 'center',
-
+        alignItems: 'flex-start',
         borderWidth: 1,
-        borderColor: '#292929',
-    },
-
-    tipIcon: {
-        width: 44,
-        height: 44,
-        borderRadius: 13,
-        backgroundColor: '#26070D',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 12,
+        borderColor: '#2A2A2A',
     },
 
     tipContent: {
         flex: 1,
+        marginLeft: 12,
     },
 
     tipTitle: {
-        fontSize: 14,
-        fontWeight: '800',
         color: '#FFFFFF',
-        marginBottom: 3,
+        fontSize: 15,
+        fontWeight: 'bold',
+        marginBottom: 5,
     },
 
     tipText: {
-        fontSize: 12,
-        color: '#999999',
-        lineHeight: 17,
+        color: '#AAAAAA',
+        fontSize: 13,
+        lineHeight: 19,
     },
-
 });
