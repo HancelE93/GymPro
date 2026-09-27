@@ -10,7 +10,43 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
+import { useRoutines } from '../context/RoutineContext';
+
 export default function ProgressScreen() {
+
+    const { routines } = useRoutines();
+
+    const totalRoutines = routines.length;
+
+
+    const totalDuration = routines.reduce(
+        (total, routine) => total + routine.duration,
+        0
+    );
+
+    
+    const averageDuration =
+        totalRoutines > 0
+            ? Math.round(totalDuration / totalRoutines)
+            : 0;
+
+    
+    const muscleGroupCounts: { [key: string]: number } = {};
+
+    routines.forEach((routine) => {
+        muscleGroupCounts[routine.muscleGroup] =
+            (muscleGroupCounts[routine.muscleGroup] || 0) + 1;
+    });
+
+    
+    const mostFrequentMuscleGroup =
+        Object.keys(muscleGroupCounts).length > 0
+            ? Object.keys(muscleGroupCounts).reduce((a, b) =>
+                muscleGroupCounts[a] >= muscleGroupCounts[b]
+                    ? a
+                    : b
+            )
+            : 'Sin datos';
 
     return (
         <SafeAreaView style={styles.container}>
@@ -115,7 +151,7 @@ export default function ProgressScreen() {
 
                 <View style={styles.statsContainer}>
 
-                    {/* ENTRENAMIENTOS */}
+                    {/* TOTAL DE RUTINAS */}
                     <View style={styles.statCard}>
 
                         <View style={styles.statIcon}>
@@ -127,32 +163,79 @@ export default function ProgressScreen() {
                         </View>
 
                         <Text style={styles.statNumber}>
-                            12
+                            {totalRoutines}
                         </Text>
 
                         <Text style={styles.statLabel}>
-                            Entrenamientos
+                            Rutinas
                         </Text>
 
                     </View>
 
-                    {/* DÍAS ACTIVOS */}
+                    {/* DURACIÓN TOTAL */}
                     <View style={styles.statCard}>
 
                         <View style={styles.statIcon}>
                             <Ionicons
-                                name="flame"
+                                name="time"
                                 size={26}
                                 color="#D90429"
                             />
                         </View>
 
                         <Text style={styles.statNumber}>
-                            8
+                            {totalDuration}
                         </Text>
 
                         <Text style={styles.statLabel}>
-                            Días activos
+                            Minutos totales
+                        </Text>
+
+                    </View>
+
+                </View>
+
+                {/* ESTADÍSTICAS ADICIONALES */}
+                <View style={styles.statsContainer}>
+
+                    {/* PROMEDIO */}
+                    <View style={styles.statCard}>
+
+                        <View style={styles.statIcon}>
+                            <Ionicons
+                                name="analytics"
+                                size={26}
+                                color="#D90429"
+                            />
+                        </View>
+
+                        <Text style={styles.statNumber}>
+                            {averageDuration}
+                        </Text>
+
+                        <Text style={styles.statLabel}>
+                            Minutos promedio
+                        </Text>
+
+                    </View>
+
+                    {/* GRUPO MUSCULAR */}
+                    <View style={styles.statCard}>
+
+                        <View style={styles.statIcon}>
+                            <Ionicons
+                                name="body"
+                                size={26}
+                                color="#D90429"
+                            />
+                        </View>
+
+                        <Text style={styles.muscleGroupNumber}>
+                            {mostFrequentMuscleGroup}
+                        </Text>
+
+                        <Text style={styles.statLabel}>
+                            Grupo más trabajado
                         </Text>
 
                     </View>
@@ -236,9 +319,11 @@ export default function ProgressScreen() {
                     </View>
 
                     <View style={styles.streakBadge}>
+
                         <Text style={styles.streakBadgeText}>
                             🔥
                         </Text>
+
                     </View>
 
                 </View>
@@ -426,6 +511,7 @@ const styles = StyleSheet.create({
     statsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginBottom: 12,
     },
 
     statCard: {
@@ -462,6 +548,14 @@ const styles = StyleSheet.create({
         fontWeight: '900',
         color: '#171717',
         marginTop: 9,
+    },
+
+    muscleGroupNumber: {
+        fontSize: 17,
+        fontWeight: '900',
+        color: '#171717',
+        marginTop: 14,
+        textAlign: 'center',
     },
 
     statLabel: {
