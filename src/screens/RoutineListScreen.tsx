@@ -40,6 +40,7 @@ export default function RoutineListScreen() {
     const {
         routines,
         deleteRoutine,
+        toggleFeatured,
     } = useRoutines();
 
     const [selectedFilter, setSelectedFilter] = useState('Todos');
@@ -236,13 +237,39 @@ export default function RoutineListScreen() {
 
                 renderItem={({ item }) => (
 
-                    <View style={styles.routineCard}>
+                    <View
+                        style={[
+                            styles.routineCard,
+                            item.featured &&
+                            styles.featuredCard,
+                        ]}
+                    >
 
                         {/* IMAGEN */}
-                        <Image
-                            source={getImage(item.muscleGroup)}
-                            style={styles.routineImage}
-                        />
+                        <View style={styles.imageContainer}>
+
+                            <Image
+                                source={getImage(item.muscleGroup)}
+                                style={styles.routineImage}
+                            />
+
+                            {item.featured && (
+                                <View style={styles.featuredBadge}>
+
+                                    <Ionicons
+                                        name="star"
+                                        size={14}
+                                        color="#FFFFFF"
+                                    />
+
+                                    <Text style={styles.featuredBadgeText}>
+                                        DESTACADA
+                                    </Text>
+
+                                </View>
+                            )}
+
+                        </View>
 
                         {/* INFORMACIÓN */}
                         <View style={styles.info}>
@@ -286,6 +313,29 @@ export default function RoutineListScreen() {
 
                         {/* ACCIONES */}
                         <View style={styles.actions}>
+
+                            {/* DESTACAR */}
+                            <Pressable
+                                style={[
+                                    styles.actionButton,
+                                    item.featured
+                                        ? styles.featuredAction
+                                        : styles.starAction,
+                                ]}
+                                onPress={() =>
+                                    toggleFeatured(item.id)
+                                }
+                            >
+                                <Ionicons
+                                    name={
+                                        item.featured
+                                            ? 'star'
+                                            : 'star-outline'
+                                    }
+                                    size={20}
+                                    color="#FFFFFF"
+                                />
+                            </Pressable>
 
                             {/* VER */}
                             <Pressable
@@ -488,7 +538,7 @@ const styles = StyleSheet.create({
         paddingBottom: 30,
     },
 
-    /* CARD BLANCA */
+    /* CARD */
     routineCard: {
         backgroundColor: '#FFFFFF',
         borderRadius: 19,
@@ -511,13 +561,45 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
     },
 
+    /* CARD DESTACADA */
+    featuredCard: {
+        borderWidth: 2,
+        borderColor: '#D90429',
+    },
+
+    /* CONTENEDOR IMAGEN */
+    imageContainer: {
+        position: 'relative',
+        marginRight: 13,
+    },
+
     /* IMAGEN */
     routineImage: {
         width: 82,
         height: 82,
         borderRadius: 15,
-        marginRight: 13,
         resizeMode: 'cover',
+    },
+
+    /* ETIQUETA DESTACADA */
+    featuredBadge: {
+        position: 'absolute',
+        bottom: 5,
+        left: 5,
+        right: 5,
+        height: 22,
+        borderRadius: 7,
+        backgroundColor: '#D90429',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    featuredBadgeText: {
+        fontSize: 8,
+        fontWeight: '900',
+        color: '#FFFFFF',
+        marginLeft: 3,
     },
 
     /* INFORMACIÓN */
@@ -571,6 +653,14 @@ const styles = StyleSheet.create({
         borderRadius: 11,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+
+    starAction: {
+        backgroundColor: '#6B5B00',
+    },
+
+    featuredAction: {
+        backgroundColor: '#D90429',
     },
 
     viewAction: {
